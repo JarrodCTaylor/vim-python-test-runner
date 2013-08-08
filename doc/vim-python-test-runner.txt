@@ -1,0 +1,138 @@
+*vim-python-test-runner.txt* A Django aware testsrunner for vim.
+Allows you to run Django unit tests that require database interactions, as 
+well as unit tests outside of a Django project with nosetests. 
+
+===============================================================================
+CONTENTS                                                 *test-runner-contents*
+
+
+    1. Intro .............................................. |test-runner-intro|
+    2. Installation ................................ |test-runner-installation|
+    3. Requirements ................................ |test-runner-requirements|
+    4. Usage .............................................. |test-runner-usage|
+    5. Config File .................................. |test-runner-config-file|
+        5.1 Config file contents........................ |config-file-contents|
+        5.2 Outside of Django................. |plugin-usage-outside-of-django|
+    6. Licence .......................................... |test-runner-licence|
+    7. Bugs ................................................ |test-runner-bugs|
+===============================================================================
+1. Intro                                                    *test-runner-intro*
+
+A simple way of running tests for your python files from within VIM.
+
+This plugin was created to allow running Django unit tests that require
+database interaction from within Vim. Thus avoiding the need to toggle 
+between your vim session and the shell for longer periods of time. It will 
+also run your regular python unit tests with nosetests as well when not 
+working on a Django project.
+
+===============================================================================
+2. Installation                                      *test-runner-installation*
+
+The recommended installation method is vundle https://github.com/gmarik/vundle
+however installation should also work via pathogen 
+https://github.com/tpope/vim-pathogen
+
+===============================================================================
+3. Requirements                                      *test-runner-requirements*
+
+You need a VIM version that was compiled with python support, which is typical 
+for most distributions on Linux/Mac.  You can check this by running 
+``vim --version | grep +python``
+if you get a hit you are in business.
+
+Also if you plan to run unit tests outside of a Django app you will
+need to have nose testrunner installed.
+
+===============================================================================
+4. Usage                                                    *test-runner-usage*
+
+The plugin provides six commands::
+
+    DjangoTestApp
+    DjangoTestClass
+    DjangoTestMethod
+    NosetestFile
+    NosetestClass
+    NosetestMethod
+
+All arguments can be tab-completed. Ensure that your cursor is within a 
+file, class, method as appropriate for the command being called.
+
+For ease of usage you can map the above actions to a shortcut. For example, 
+if you wanted leader mappings you could set something like the following in 
+your vimrc:
+
+    nnoremap<Leader>da :DjangoTestApp<CR>
+    nnoremap<Leader>dc :DjangoTestClass<CR>
+    nnoremap<Leader>dm :DjangoTestMethod<CR>
+    nnoremap<Leader>nf :NosetestFile<CR>
+    nnoremap<Leader>nc :NosetestClass<CR>
+    nnoremap<Leader>nm :NosetestMethod<CR>
+
+===============================================================================
+5. Config File                                        *test-runner-config-file*
+
+To make use of the plugin for Django projects you will need to create a small 
+config file named ``.vim-django`` in your project that defines what application you 
+would like to run tests for. Assuming a basic folder structure the config file 
+would be saved in the following location if we are testing app2.
+```
+── Project Root
+   ├── manage.py
+   ├── app1
+   └── app2
+       ├── .vim-django
+       └── tests
+          ├── tests1.py
+          └── tests2.py
+```
+
+--------------------------------------------------------------------------------
+5.1 Config file contents                                  *config-file-contents*
+
+The contents of the file are minimal. You must define an app_name and 
+optionally if you have your project configured for different environments 
+you may specify that as well. 
+
+```
+{'app_name': 'nameOfMyApp', 'environment': 'OptionalNameOfEnv'}
+```
+
+--------------------------------------------------------------------------------
+5.2 Outside of Django                           *plugin-usage-outside-of-django*
+
+Nothing other than nose is required to use this plugin for tests that are 
+outside of a Django application.
+
+===============================================================================
+6. Licence                                                *test-runner-licence*
+
+The MIT License (MIT)
+
+Copyright (c) 2013 Jarrod Taylor 
+<jarrod [dot] c [dot] taylor [at] gmail [dot] com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+===============================================================================
+7. Bugs                                                      *test-runner-bugs*
+
+If you find a bug please post it on the issue tracker:
+https://github.com/JarrodCTaylor/vim-python-test-runner/issues
+===============================================================================
