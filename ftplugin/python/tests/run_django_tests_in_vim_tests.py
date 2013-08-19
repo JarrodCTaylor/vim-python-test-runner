@@ -16,23 +16,28 @@ class RunDjangoTestsInVimTests(unittest.TestCase):
         os.makedirs("/tmp/bad_dirs_no_files/Level1/Level2/Level3/")
         os.makedirs("/tmp/bad_dirs_no_config_file/Level1/Level2/Level3/")
         os.makedirs("/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3/")
+        os.makedirs("/tmp/bad_dirs_no_path_to_tests_specified/Level1/Level2/Level3")
 
         with open("/tmp/good_dirs_app_only/Level1/.vim-django", "w") as f:
-            f.write('{"app_name": "example_app"}')
+            f.write('{"app_name": "example_app", "path_to_tests": "tests"}')
         with open("/tmp/good_dirs_app_only/manage.py", "w") as f:
             f.write("#Place holder")
 
         with open("/tmp/good_dirs_app_name_and_env_defined/Level1/.vim-django", "w") as f:
-            f.write('{"app_name": "example_app", "environment": "test"}')
+            f.write('{"app_name": "example_app", "environment": "test", "path_to_tests": "tests"}')
         with open("/tmp/good_dirs_app_name_and_env_defined/manage.py", "w") as f:
             f.write("#Place holder")
-
         with open("/tmp/bad_dirs_no_config_file/manage.py", "w") as f:
             f.write("#Place holder")
 
         with open("/tmp/bad_dirs_no_app_specified/Level1/.vim-django", "w") as f:
             f.write('{"bad_field": "example_app"}')
         with open("/tmp/bad_dirs_no_app_specified/manage.py", "w") as f:
+            f.write("#Place holder")
+
+        with open("/tmp/bad_dirs_no_path_to_tests_specified/Level1/.vim-django", "w") as f:
+            f.write('{"app_name": "example_app"}')
+        with open("/tmp/bad_dirs_no_path_to_tests_specified/manage.py", "w") as f:
             f.write("#Place holder")
 
     def tearDown(self):
@@ -47,11 +52,15 @@ class RunDjangoTestsInVimTests(unittest.TestCase):
         os.remove("/tmp/bad_dirs_no_app_specified/Level1/.vim-django")
         os.remove("/tmp/bad_dirs_no_app_specified/manage.py")
 
+        os.remove("/tmp/bad_dirs_no_path_to_tests_specified/Level1/.vim-django")
+        os.remove("/tmp/bad_dirs_no_path_to_tests_specified/manage.py")
+
         os.removedirs("/tmp/good_dirs_app_only/Level1/Level2/Level3/")
         os.removedirs("/tmp/good_dirs_app_name_and_env_defined/Level1/Level2/Level3/")
         os.removedirs("/tmp/bad_dirs_no_files/Level1/Level2/Level3/")
         os.removedirs("/tmp/bad_dirs_no_config_file/Level1/Level2/Level3/")
         os.removedirs("/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3/")
+        os.removedirs("/tmp/bad_dirs_no_path_to_tests_specified/Level1/Level2/Level3")
 
     def test_find_vim_django_file(self):
         return_value = sut.find_path_to_file("/tmp/good_dirs_app_only/Level1/Level2/Level3", ".vim-django")
@@ -104,93 +113,105 @@ class RunDjangoTestsInVimTests(unittest.TestCase):
         self.assertEqual(False, app_name)
 
     def test_get_command_to_run_the_current_app_when_manage_py_found_and_app_name_provided_and_no_env_specified(self):
-        current_dir = '/tmp/good_dirs_app_only/Level1/Level2/Level3'
+        current_dir = '/tmp/good_dirs_app_only/Level1/Level2/Level3/test_file.py'
         command_to_run = sut.get_command_to_run_the_current_app(current_dir)
         self.assertEqual(":!python /tmp/good_dirs_app_only/manage.py test example_app", command_to_run)
 
     def test_get_command_to_run_the_current_app_when_manage_py_found_and_app_name_and_env_specified(self):
-        current_dir = '/tmp/good_dirs_app_name_and_env_defined/Level1/Level2/Level3'
+        current_dir = '/tmp/good_dirs_app_name_and_env_defined/Level1/Level2/Level3/test_file.py'
         command_to_run = sut.get_command_to_run_the_current_app(current_dir)
         self.assertEqual(":!python /tmp/good_dirs_app_name_and_env_defined/manage.py test test example_app", command_to_run)
 
     def test_get_command_to_run_the_current_app_when_config_file_not_properly_formated(self):
-        current_dir = '/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3'
+        current_dir = '/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3/test_file.py'
         command_to_run = sut.get_command_to_run_the_current_app(current_dir)
-        self.assertEqual(".vim-django file does not exist or is improperly formated. ':help run-django-tests'", command_to_run)
+        self.assertEqual(".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'", command_to_run)
 
     def test_get_command_to_run_the_current_app_when_config_file_not_present(self):
-        current_dir = '/tmp/bad_dirs_no_config_file/Level1/Level2/Level3'
+        current_dir = '/tmp/bad_dirs_no_config_file/Level1/Level2/Level3/test_file.py'
         command_to_run = sut.get_command_to_run_the_current_app(current_dir)
-        self.assertEqual(".vim-django file does not exist or is improperly formated. ':help run-django-tests'", command_to_run)
+        self.assertEqual(".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'", command_to_run)
 
     def test_get_command_to_run_the_current_app_when_manage_py_not_found(self):
-        current_dir = '/tmp/bad_dirs_no_files/Level1/Level2/Level3'
+        current_dir = '/tmp/bad_dirs_no_files/Level1/Level2/Level3/test_file.py'
         command_to_run = sut.get_command_to_run_the_current_app(current_dir)
         self.assertEqual("Are you sure this is a Django project?", command_to_run)
 
     def test_get_command_to_run_the_current_class_with_manage_py_app_name_but_no_env_specified(self):
-        current_dir = '/tmp/good_dirs_app_only/Level1/Level2/Level3'
+        current_dir = '/tmp/good_dirs_app_only/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
-        self.assertEqual(":!python /tmp/good_dirs_app_only/manage.py test example_app.Example1", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
+        self.assertEqual(":!python /tmp/good_dirs_app_only/manage.py test example_app.tests.test_file:Example1", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_class_with_manage_py_app_name_and_env_specified(self):
-        current_dir = '/tmp/good_dirs_app_name_and_env_defined/Level1/Level2/Level3'
+        current_dir = '/tmp/good_dirs_app_name_and_env_defined/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
-        self.assertEqual(":!python /tmp/good_dirs_app_name_and_env_defined/manage.py test test example_app.Example1", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
+        self.assertEqual(":!python /tmp/good_dirs_app_name_and_env_defined/manage.py test test example_app.tests.test_file:Example1", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
 
-    def test_get_command_to_run_the_current_class_when_config_not_properly_formated(self):
-        current_dir = '/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3'
+    def test_get_command_to_run_the_current_class_when_config_not_properly_formated_no_app_name(self):
+        current_dir = '/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
-        self.assertEqual(".vim-django file does not exist or is improperly formated. ':help run-django-tests'", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
+        self.assertEqual(".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
+
+    def test_get_command_to_run_the_current_class_when_config_not_properly_formated_no_path_to_tests(self):
+        current_dir = '/tmp/bad_dirs_no_path_to_tests_specified/Level1/Level2/Level3/test_file.py'
+        current_line = "        print('This is a testD')\n"
+        current_buffer = self.build_buffer_helper()
+        self.assertEqual(".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_class_when_config_not_present(self):
-        current_dir = '/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3'
+        current_dir = '/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
-        self.assertEqual(".vim-django file does not exist or is improperly formated. ':help run-django-tests'", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
+        self.assertEqual(".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_class_when_manage_py_not_found(self):
-        current_dir = '/tmp/bad_dirs_no_files/Level1/Level2/Level3'
+        current_dir = '/tmp/bad_dirs_no_files/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
         self.assertEqual("Are you sure this is a Django project?", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_method_with_manage_py_app_name_but_no_env_specified(self):
-        current_dir = '/tmp/good_dirs_app_only/Level1/Level2/Level3'
+        current_dir = '/tmp/good_dirs_app_only/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
-        self.assertEqual(":!python /tmp/good_dirs_app_only/manage.py test example_app.Example1.dummy2", sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
+        self.assertEqual(":!python /tmp/good_dirs_app_only/manage.py test example_app.tests.test_file:Example1.dummy2", sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_method_with_manage_py_app_name_and_env_specified(self):
-        current_dir = '/tmp/good_dirs_app_name_and_env_defined/Level1/Level2/Level3'
+        current_dir = '/tmp/good_dirs_app_name_and_env_defined/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
-        expected_return_value = ":!python /tmp/good_dirs_app_name_and_env_defined/manage.py test test example_app.Example1.dummy2"
+        expected_return_value = ":!python /tmp/good_dirs_app_name_and_env_defined/manage.py test test example_app.tests.test_file:Example1.dummy2"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_method_when_config_not_properly_formated(self):
-        current_dir = '/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3'
+        current_dir = '/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
-        expected_return_value = ".vim-django file does not exist or is improperly formated. ':help run-django-tests'"
+        expected_return_value = ".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_method_when_config_not_present(self):
-        current_dir = '/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3'
+        current_dir = '/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
-        expected_return_value = ".vim-django file does not exist or is improperly formated. ':help run-django-tests'"
+        expected_return_value = ".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_method_when_manage_py_not_found(self):
-        current_dir = '/tmp/bad_dirs_no_files/Level1/Level2/Level3'
+        current_dir = '/tmp/bad_dirs_no_files/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
         expected_return_value = "Are you sure this is a Django project?"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
+
+    def test_get_command_to_run_the_django_test_for_the_current_file(self):
+        current_dir = '/tmp/good_dirs_app_only/Level1/Level2/Level3/test_file.py'
+        expected_return_value = ":!python /tmp/good_dirs_app_only/manage.py test example_app.tests.test_file"
+        command_returned = sut.get_command_to_run_the_current_file(current_dir)
+        self.assertEqual(command_returned, expected_return_value)
 
     def build_buffer_helper(self):
         with open("dummy_test_file.py", "r") as f:
