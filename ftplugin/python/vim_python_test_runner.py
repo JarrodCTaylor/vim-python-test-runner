@@ -17,25 +17,38 @@ def get_command_to_run_the_current_app(current_dir):
     elif app_name:
         return (":!python {0} test {1}".format(path_to_manage, app_name))
     else:
-        return (".vim-django file does not exist or is improperly formated. ':help run-django-tests'")
+        return (".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'")
+
+
+def get_command_to_run_the_current_file(current_dir):
+    command_to_current_app = get_command_to_run_the_current_app(current_dir)
+    path_to_tests = get_json_field_from_config_file(current_dir, "path_to_tests")
+    file_name = get_file_name(current_dir)
+    if "Are you sure this is a Django project?" in command_to_current_app:
+        return "Are you sure this is a Django project?"
+    elif ".vim-django file does not exist" in command_to_current_app or not path_to_tests:
+        return (".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'")
+    else:
+        return command_to_current_app + "." + path_to_tests + "." + file_name
 
 
 def get_command_to_run_the_current_class(current_dir, current_line, current_buffer):
     class_name = get_current_class(current_line, current_buffer)
-    command_to_current_app = get_command_to_run_the_current_app(current_dir)
-    if ".vim-django file does not exist" in command_to_current_app:
-        return (".vim-django file does not exist or is improperly formated. ':help run-django-tests'")
-    elif "Are you sure this is a Django project?" in command_to_current_app:
+    command_to_current_file = get_command_to_run_the_current_app(current_dir)
+    path_to_tests = get_json_field_from_config_file(current_dir, "path_to_tests")
+    if "Are you sure this is a Django project?" in command_to_current_file:
         return "Are you sure this is a Django project?"
+    elif ".vim-django file does not exist" in command_to_current_file or not path_to_tests:
+        return (".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'")
     else:
-        return command_to_current_app + "." + class_name
+        return get_command_to_run_the_current_file(current_dir) + ":" + class_name
 
 
 def get_command_to_run_the_current_method(current_dir, current_line, current_buffer):
     method_name = get_current_method(current_line, current_buffer)
     command_to_current_class = get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
     if ".vim-django file does not exist" in command_to_current_class:
-        return (".vim-django file does not exist or is improperly formated. ':help run-django-tests'")
+        return (".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'")
     elif "Are you sure this is a Django project?" in command_to_current_class:
         return "Are you sure this is a Django project?"
     else:
@@ -65,6 +78,11 @@ def find_path_to_file(current_dir, file_to_look_for):
         if file_to_look_for in os.listdir(path_to_check):
             return path_to_check + os.sep + file_to_look_for
     return False
+
+
+def get_file_name(current_dir):
+    path_parts = current_dir.split(os.sep)
+    return path_parts[-1].split(".")[0]
 
 
 def get_class_name(class_line):
