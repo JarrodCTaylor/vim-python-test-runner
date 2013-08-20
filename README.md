@@ -85,7 +85,7 @@ know what it should be then you don't need to use it.
 
 ```
 {"app_name": "app2",
- "path_to_tests": "tests"
+ "path_to_tests": "tests",
  "environment": "OptionalNameOfEnv"}
 ```
 *NOTE* be sure to use double quotes in the config file as it is parsed as json
