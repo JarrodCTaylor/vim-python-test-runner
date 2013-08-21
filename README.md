@@ -1,3 +1,8 @@
+#NOTE
+Currently the plugin appears to work with Linux however I cannot get it to function 
+on a Mac. I am working to resole this issue and will remove this notice when the 
+plugin is functioning properly on OS X.
+
 vim-python-test-runner.vim
 ==========
 A simple way of running tests for your python files from within VIM.
