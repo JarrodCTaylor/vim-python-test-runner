@@ -29,7 +29,7 @@ elif vim.eval("g:debug_vim_test_runner") == "1":
     print(">>>>>>>>>>DEBUGGING MODE<<<<<<<<<<\nAttempting to run the following command\n{0}".format(run_app_tests_command))
 else:
     if _platform == 'linux' or _platform == 'linux2':
-        vim.command(":!python".format(run_app_tests_command))
+        vim.command(":!python {0}".format(run_app_tests_command))
     elif _platform == 'darwin':
         vim.command(":!sudo python {0}".format(run_app_tests_command))
 endPython
@@ -61,7 +61,7 @@ elif vim.eval("g:debug_vim_test_runner") == "1":
     print(">>>>>>>>>>DEBUGGING MODE<<<<<<<<<<\nAttempting to run the following command\n{0}".format(run_file_tests_command))
 else:
     if _platform == 'linux' or _platform == 'linux2':
-        vim.command(":!python".format(run_file_tests_command))
+        vim.command(":!python {0}".format(run_file_tests_command))
     elif _platform == 'darwin':
         vim.command(":!sudo python {0}".format(run_file_tests_command))
 endPython
@@ -93,7 +93,7 @@ elif vim.eval("g:debug_vim_test_runner") == "1":
     print(">>>>>>>>>>DEBUGGING MODE<<<<<<<<<<\nAttempting to run the following command\n{0}".format(run_class_tests_command))
 else:
     if _platform == 'linux' or _platform == 'linux2':
-        vim.command(":!python".format(run_class_tests_command))
+        vim.command(":!python {0}".format(run_class_tests_command))
     elif _platform == 'darwin':
         vim.command(":!sudo python {0}".format(run_class_tests_command))
 endPython
@@ -125,7 +125,7 @@ elif vim.eval("g:debug_vim_test_runner") == "1":
     print(">>>>>>>>>>DEBUGGING MODE<<<<<<<<<<\nAttempting to run the following command\n{0}".format(run_method_test_command))
 else:
     if _platform == 'linux' or _platform == 'linux2':
-        vim.command(":!python".format(run_method_test_command))
+        vim.command(":!python {0}".format(run_method_test_command))
     elif _platform == 'darwin':
         vim.command(":!sudo python {0}".format(run_method_test_command))
 endPython
