@@ -1,8 +1,3 @@
-#NOTE
-Currently the plugin appears to work with Linux however I cannot get it to function 
-on a Mac. I am working to resole this issue and will remove this notice when the 
-plugin is functioning properly on OS X.
-
 vim-python-test-runner.vim
 ==========
 A simple way of running tests for your python files from within VIM.
@@ -57,6 +52,12 @@ your vimrc:
     nnoremap<Leader>nf :NosetestFile<CR>
     nnoremap<Leader>nc :NosetestClass<CR>
     nnoremap<Leader>nm :NosetestMethod<CR>
+
+###NOTE to OS X users
+The django commands need to be ran from vim with sudo on OS X so the first 
+time you run one of the Django test commands you will be asked by the shell 
+for your password. You should only have to enter it once then you will be able 
+to run subsequent commands in that buffer without reentering your password.
 
 Required Configuration File for Django Tests
 --------------------------------------------
