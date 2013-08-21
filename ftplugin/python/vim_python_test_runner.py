@@ -13,9 +13,9 @@ def get_command_to_run_the_current_app(current_dir):
         return "Are you sure this is a Django project?"
 
     if app_name and env_name:
-        return (":!python {0} {1} test {2}".format(path_to_manage, env_name, app_name))
+        return ("{0} {1} test {2}".format(path_to_manage, env_name, app_name))
     elif app_name:
-        return (":!python {0} test {1}".format(path_to_manage, app_name))
+        return ("{0} test {1}".format(path_to_manage, app_name))
     else:
         return (".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'")
 

@@ -11,6 +11,7 @@ python << endPython
 import os
 import vim
 import inspect
+from sys import platform as _platform
 # Add our python script to the path for importing
 for path in vim.eval('&runtimepath').split(','):
     if 'vim-python' in path and "after" not in path:
@@ -27,7 +28,10 @@ elif "Are you sure this is a Django project?" == run_app_tests_command:
 elif vim.eval("g:debug_vim_test_runner") == "1":
     print(">>>>>>>>>>DEBUGGING MODE<<<<<<<<<<\nAttempting to run the following command\n{0}".format(run_app_tests_command))
 else:
-    vim.command(run_app_tests_command)
+    if _platform == 'linux' or _platform == 'linux2':
+        vim.command(":!python".format(run_app_tests_command))
+    elif _platform == 'darwin':
+        vim.command(":!sudo python {0}".format(run_app_tests_command))
 endPython
 endfunction
 
@@ -39,6 +43,7 @@ python << endPython
 import os
 import vim
 import inspect
+from sys import platform as _platform
 # Add our python script to the path for importing
 for path in vim.eval('&runtimepath').split(','):
     if 'vim-python' in path and "after" not in path:
@@ -55,7 +60,10 @@ elif "Are you sure this is a Django project?" == run_file_tests_command:
 elif vim.eval("g:debug_vim_test_runner") == "1":
     print(">>>>>>>>>>DEBUGGING MODE<<<<<<<<<<\nAttempting to run the following command\n{0}".format(run_file_tests_command))
 else:
-    vim.command(run_file_tests_command)
+    if _platform == 'linux' or _platform == 'linux2':
+        vim.command(":!python".format(run_file_tests_command))
+    elif _platform == 'darwin':
+        vim.command(":!sudo python {0}".format(run_file_tests_command))
 endPython
 endfunction
 
@@ -67,6 +75,7 @@ python << endPython
 import os
 import vim
 import inspect
+from sys import platform as _platform
 # Add our python script to the path for importing
 for path in vim.eval('&runtimepath').split(','):
     if 'vim-python' in path and "after" not in path:
@@ -83,7 +92,10 @@ elif "Are you sure this is a Django project?" == run_class_tests_command:
 elif vim.eval("g:debug_vim_test_runner") == "1":
     print(">>>>>>>>>>DEBUGGING MODE<<<<<<<<<<\nAttempting to run the following command\n{0}".format(run_class_tests_command))
 else:
-    vim.command(run_class_tests_command)
+    if _platform == 'linux' or _platform == 'linux2':
+        vim.command(":!python".format(run_class_tests_command))
+    elif _platform == 'darwin':
+        vim.command(":!sudo python {0}".format(run_class_tests_command))
 endPython
 endfunction
 
@@ -95,6 +107,7 @@ python << endPython
 import os
 import vim
 import inspect
+from sys import platform as _platform
 # Add our python script to the path for importing
 for path in vim.eval('&runtimepath').split(','):
     if 'vim-python' in path and "after" not in path:
@@ -111,7 +124,10 @@ elif "Are you sure this is a Django project?" == run_method_test_command:
 elif vim.eval("g:debug_vim_test_runner") == "1":
     print(">>>>>>>>>>DEBUGGING MODE<<<<<<<<<<\nAttempting to run the following command\n{0}".format(run_method_test_command))
 else:
-    vim.command(run_method_test_command)
+    if _platform == 'linux' or _platform == 'linux2':
+        vim.command(":!python".format(run_method_test_command))
+    elif _platform == 'darwin':
+        vim.command(":!sudo python {0}".format(run_method_test_command))
 endPython
 endfunction
 

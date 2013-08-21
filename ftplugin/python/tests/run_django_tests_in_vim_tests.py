@@ -115,12 +115,12 @@ class RunDjangoTestsInVimTests(unittest.TestCase):
     def test_get_command_to_run_the_current_app_when_manage_py_found_and_app_name_provided_and_no_env_specified(self):
         current_dir = '/tmp/good_dirs_app_only/Level1/Level2/Level3/test_file.py'
         command_to_run = sut.get_command_to_run_the_current_app(current_dir)
-        self.assertEqual(":!python /tmp/good_dirs_app_only/manage.py test example_app", command_to_run)
+        self.assertEqual("/tmp/good_dirs_app_only/manage.py test example_app", command_to_run)
 
     def test_get_command_to_run_the_current_app_when_manage_py_found_and_app_name_and_env_specified(self):
         current_dir = '/tmp/good_dirs_app_name_and_env_defined/Level1/Level2/Level3/test_file.py'
         command_to_run = sut.get_command_to_run_the_current_app(current_dir)
-        self.assertEqual(":!python /tmp/good_dirs_app_name_and_env_defined/manage.py test test example_app", command_to_run)
+        self.assertEqual("/tmp/good_dirs_app_name_and_env_defined/manage.py test test example_app", command_to_run)
 
     def test_get_command_to_run_the_current_app_when_config_file_not_properly_formated(self):
         current_dir = '/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3/test_file.py'
@@ -141,13 +141,13 @@ class RunDjangoTestsInVimTests(unittest.TestCase):
         current_dir = '/tmp/good_dirs_app_only/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
-        self.assertEqual(":!python /tmp/good_dirs_app_only/manage.py test example_app.tests.test_file:Example1", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
+        self.assertEqual("/tmp/good_dirs_app_only/manage.py test example_app.tests.test_file:Example1", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_class_with_manage_py_app_name_and_env_specified(self):
         current_dir = '/tmp/good_dirs_app_name_and_env_defined/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
-        self.assertEqual(":!python /tmp/good_dirs_app_name_and_env_defined/manage.py test test example_app.tests.test_file:Example1", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
+        self.assertEqual("/tmp/good_dirs_app_name_and_env_defined/manage.py test test example_app.tests.test_file:Example1", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_class_when_config_not_properly_formated_no_app_name(self):
         current_dir = '/tmp/bad_dirs_no_app_specified/Level1/Level2/Level3/test_file.py'
@@ -177,13 +177,13 @@ class RunDjangoTestsInVimTests(unittest.TestCase):
         current_dir = '/tmp/good_dirs_app_only/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
-        self.assertEqual(":!python /tmp/good_dirs_app_only/manage.py test example_app.tests.test_file:Example1.dummy2", sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
+        self.assertEqual("/tmp/good_dirs_app_only/manage.py test example_app.tests.test_file:Example1.dummy2", sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_method_with_manage_py_app_name_and_env_specified(self):
         current_dir = '/tmp/good_dirs_app_name_and_env_defined/Level1/Level2/Level3/test_file.py'
         current_line = "        print('This is a testD')\n"
         current_buffer = self.build_buffer_helper()
-        expected_return_value = ":!python /tmp/good_dirs_app_name_and_env_defined/manage.py test test example_app.tests.test_file:Example1.dummy2"
+        expected_return_value = "/tmp/good_dirs_app_name_and_env_defined/manage.py test test example_app.tests.test_file:Example1.dummy2"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_method_when_config_not_properly_formated(self):
@@ -209,7 +209,7 @@ class RunDjangoTestsInVimTests(unittest.TestCase):
 
     def test_get_command_to_run_the_django_test_for_the_current_file(self):
         current_dir = '/tmp/good_dirs_app_only/Level1/Level2/Level3/test_file.py'
-        expected_return_value = ":!python /tmp/good_dirs_app_only/manage.py test example_app.tests.test_file"
+        expected_return_value = "/tmp/good_dirs_app_only/manage.py test example_app.tests.test_file"
         command_returned = sut.get_command_to_run_the_current_file(current_dir)
         self.assertEqual(command_returned, expected_return_value)
 
