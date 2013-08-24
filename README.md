@@ -62,36 +62,34 @@ to run subsequent commands in that buffer without reentering your password.
 Required Configuration File for Django Tests
 --------------------------------------------
 To make use of the plugin for Django projects you will need to create a small 
-config file named ``.vim-django`` in your project that defines some information
-about the app you would like to run tests for. Assuming a basic folder 
-structure the config file would be saved in the following location if we are 
-testing app2.
+config file named ``.vim-django`` in the root of your project that defines some
+information about the apps you would like to run tests for. Assuming a basic 
+folder structure the config file would be saved in the following location.
 ```
 ── Project Root
+   ├── .vim-django
    ├── manage.py
    ├── app1
+   │   └── tests
+   │       └── testsa1.py
    └── app2
-       ├── .vim-django
        └── tests
-          ├── tests1.py
-          └── tests2.py
+           ├── testsb1.py
+           └── testsb2.py
 ```
 
 Config file contents
 ------------------
-The contents of the file are minimal. You must define an app_name and 
-a dot separated path to the test folder from within your app. Optionally if you
-have your project configured for different environments you may specify that also 
+The contents of the file are minimal. You list the app names that you will be 
+running tests for and optionally if you have your project configured for different 
+environments you may specify that also 
 
-Using the example above we would set the app name to "app2" and the path_to_tests
-will be equal to "tests" since we are using the basic common folder structure of 
-having our tests directory saved in the root of our app. If it is nested you would
-need something like "parent.tests". The environment field is optional. If you don't
-know what it should be then you don't need to use it. 
+Using the example project above we would set the app name to "app1, app2" 
+The environment field is optional. If you don't know what it should be then 
+you don't need to use it. 
 
 ```
-{"app_name": "app2",
- "path_to_tests": "tests",
+{"app_name": "app1, app2",
  "environment": "OptionalNameOfEnv"}
 ```
 *NOTE* be sure to use double quotes in the config file as it is parsed as json

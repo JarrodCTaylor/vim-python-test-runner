@@ -6,28 +6,28 @@ import json
 
 def get_command_to_run_the_current_app(current_dir):
     path_to_manage = find_path_to_file(current_dir, "manage.py")
-    app_name = get_json_field_from_config_file(current_dir, "app_name")
-    env_name = get_json_field_from_config_file(current_dir, "environment")
-
     if not path_to_manage:
-        return "Are you sure this is a Django project?"
+        return "Not Django"
+
+    app_name = get_app_name(current_dir)
+    env_name = get_json_field_from_config_file(current_dir, "environment")
 
     if app_name and env_name:
         return ("{0} {1} test {2}".format(path_to_manage, env_name, app_name))
     elif app_name:
         return ("{0} test {1}".format(path_to_manage, app_name))
     else:
-        return (".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'")
+        return ".vim-django does not exist"
 
 
 def get_command_to_run_the_current_file(current_dir):
     command_to_current_app = get_command_to_run_the_current_app(current_dir)
-    path_to_tests = get_json_field_from_config_file(current_dir, "path_to_tests")
+    path_to_tests = get_dot_notation_path_to_test(current_dir)
     file_name = get_file_name(current_dir)
-    if "Are you sure this is a Django project?" in command_to_current_app:
-        return "Are you sure this is a Django project?"
-    elif ".vim-django file does not exist" in command_to_current_app or not path_to_tests:
-        return (".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'")
+    if "Not Django" in command_to_current_app:
+        return "Not Django"
+    elif ".vim-django does not exist" in command_to_current_app or not path_to_tests:
+        return ".vim-django does not exist"
     else:
         return command_to_current_app + "." + path_to_tests + "." + file_name
 
@@ -35,11 +35,10 @@ def get_command_to_run_the_current_file(current_dir):
 def get_command_to_run_the_current_class(current_dir, current_line, current_buffer):
     class_name = get_current_class(current_line, current_buffer)
     command_to_current_file = get_command_to_run_the_current_app(current_dir)
-    path_to_tests = get_json_field_from_config_file(current_dir, "path_to_tests")
-    if "Are you sure this is a Django project?" in command_to_current_file:
-        return "Are you sure this is a Django project?"
-    elif ".vim-django file does not exist" in command_to_current_file or not path_to_tests:
-        return (".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'")
+    if "Not Django" in command_to_current_file:
+        return command_to_current_file
+    elif ".vim-django does not exist" in command_to_current_file:
+        return ".vim-django does not exist"
     else:
         return get_command_to_run_the_current_file(current_dir) + ":" + class_name
 
@@ -47,10 +46,10 @@ def get_command_to_run_the_current_class(current_dir, current_line, current_buff
 def get_command_to_run_the_current_method(current_dir, current_line, current_buffer):
     method_name = get_current_method(current_line, current_buffer)
     command_to_current_class = get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
-    if ".vim-django file does not exist" in command_to_current_class:
-        return (".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner'")
-    elif "Are you sure this is a Django project?" in command_to_current_class:
-        return "Are you sure this is a Django project?"
+    if "Not Django" in command_to_current_class:
+        return command_to_current_class
+    elif ".vim-django does not exist" in command_to_current_class:
+        return ".vim-django does not exist"
     else:
         return command_to_current_class + "." + method_name
 
@@ -80,6 +79,23 @@ def find_path_to_file(current_dir, file_to_look_for):
     return False
 
 
+def get_app_name(current_dir):
+    apps = get_json_field_from_config_file(current_dir, "app_name")
+    try:
+        return [app.lstrip() for app in apps.split(",") if app.lstrip() in current_dir][0]
+    except:
+        return False
+    return False
+
+
+def get_dot_notation_path_to_test(current_dir):
+    app_name = get_app_name(current_dir)
+    if app_name:
+        path_to_tests = current_dir.split(app_name)[1]
+        return ".".join(path_to_tests[1:].split("/")[:-1])
+    return False
+
+
 def get_file_name(current_dir):
     path_parts = current_dir.split(os.sep)
     return path_parts[-1].split(".")[0]
@@ -90,14 +106,11 @@ def get_class_name(class_line):
     return class_name.group(1)
 
 
-def get_current_class(current_line, current_buffer):
-    last_class_name = ""
-    for line in current_buffer:
-        if "class " in line:
-            last_class_name = line
-        if current_line == line:
-            return get_class_name(last_class_name)
-    return("You don't appear to be in a class")
+def get_current_class(current_line_index, current_buffer):
+    for line in xrange(current_line_index - 1, -1, -1):
+        if "class " in current_buffer[line]:
+            return get_class_name(current_buffer[line])
+    return "You don't appear to be in a class"
 
 
 def get_method_name(method_line):
@@ -105,14 +118,13 @@ def get_method_name(method_line):
     return method_name.group(1)
 
 
-def get_current_method(current_line, current_buffer):
-    last_method_name = ""
-    for line in current_buffer:
-        if "def " in line:
-            last_method_name = line
-        if current_line == line:
-            return get_method_name(last_method_name)
-    return("You don't appear to be in a method")
+def get_current_method(current_line_index, current_buffer):
+    for line in xrange(current_line_index - 1, -1, -1):
+        if "class " in current_buffer[line]:
+            return "You don't appear to be in a method"
+        if "def " in current_buffer[line]:
+            return get_method_name(current_buffer[line])
+    return "You don't appear to be in a method"
 
 
 def get_json_field_from_config_file(current_dir, field_name):

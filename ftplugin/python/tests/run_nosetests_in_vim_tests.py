@@ -16,17 +16,17 @@ class RunNosetestsInVimTests(unittest.TestCase):
 
     def test_create_command_to_run_current_class_with_nosetests(self):
         path_to_current_file = "/tmp/project/tests/aTestFile.py"
-        current_line = "        print('This is a test4b')\n"
+        current_line = 27
         current_buffer = self.build_buffer_helper()
         command_to_run = sut.get_command_to_run_current_class_with_nosetests(path_to_current_file, current_line, current_buffer)
         self.assertEqual(":!nosetests /tmp/project/tests/aTestFile.py:Example2", command_to_run)
 
     def test_create_command_to_run_current_method_with_nosetests(self):
         path_to_current_file = "/tmp/project/tests/aTestFile.py"
-        current_line = "        print('This is a test4b')\n"
+        current_line = 44
         current_buffer = self.build_buffer_helper()
         command_to_run = sut.get_command_to_run_current_method_with_nosetests(path_to_current_file, current_line, current_buffer)
-        self.assertEqual(":!nosetests /tmp/project/tests/aTestFile.py:Example2.dummy1b", command_to_run)
+        self.assertEqual(":!nosetests /tmp/project/tests/aTestFile.py:Example3.double_dummy1", command_to_run)
 
     def build_buffer_helper(self):
         with open("dummy_test_file.py", "r") as f:

@@ -1,3 +1,6 @@
+
+
+
 class Example1(object):
 
     def dummy1(self):
@@ -25,6 +28,23 @@ class Example2(object):
         print('This is a test5b')
 
     def dummy2b(self):
+        print('This is a testAb')
+        print('This is a testBb')
+        print('This is a testCb')
+        print('This is a testDb')
+        print('This is a testEb')
+
+
+class Example3(object):
+
+    def double_dummy1(self):
+        print('This is a test1b')
+        print('This is a test2b')
+        print('This is a test3b')
+        print('This is a test4b')
+        print('This is a test5b')
+
+    def double_dummy(self):
         print('This is a testAb')
         print('This is a testBb')
         print('This is a testCb')
