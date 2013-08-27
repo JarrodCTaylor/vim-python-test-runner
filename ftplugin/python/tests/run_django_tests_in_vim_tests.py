@@ -19,6 +19,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         os.makedirs("/tmp/project_multiple_apps/example_app1/tests/")
         os.makedirs("/tmp/bad_project_multiple_invalid_apps/example_app1/tests/")
         os.makedirs("/tmp/project_nested_test_dirs/example_app1/tests/nested1/")
+        os.makedirs("/tmp/project_contains_app_name/app_name/tests/")
 
         with open("/tmp/project_app_only/.vim-django", "w") as f:
             f.write('{"app_name": "example_app1"}')
@@ -58,6 +59,11 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         with open("/tmp/project_nested_test_dirs/manage.py", "w") as f:
             f.write("#Place holder")
 
+        with open("/tmp/project_contains_app_name/.vim-django", "w") as f:
+            f.write('{"app_name": "example_app1, app_name"}')
+        with open("/tmp/project_contains_app_name/manage.py", "w") as f:
+            f.write("#Place holder")
+
     def tearDown(self):
         os.remove("/tmp/project_app_only/manage.py")
         os.remove("/tmp/project_app_only/.vim-django")
@@ -82,6 +88,9 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         os.remove("/tmp/project_nested_test_dirs/.vim-django")
         os.remove("/tmp/project_nested_test_dirs/manage.py")
 
+        os.remove("/tmp/project_contains_app_name/.vim-django")
+        os.remove("/tmp/project_contains_app_name/manage.py")
+
         os.removedirs("/tmp/project_app_only/example_app1/tests/")
         os.removedirs("/tmp/project_app_name_and_env/example_app1/tests/")
         os.removedirs("/tmp/bad_project_no_files/example_app1/tests/")
@@ -91,6 +100,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         os.removedirs("/tmp/project_multiple_apps/example_app1/tests/")
         os.removedirs("/tmp/bad_project_multiple_invalid_apps/example_app1/tests/")
         os.removedirs("/tmp/project_nested_test_dirs/example_app1/tests/nested1/")
+        os.removedirs("/tmp/project_contains_app_name/app_name/tests/")
 
     def test_find_vim_django_file(self):
         return_value = sut.find_path_to_file("/tmp/project_app_only/example_app1/tests", ".vim-django")
@@ -365,6 +375,14 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         current_buffer = self.build_buffer_helper()
         expected_return_value = "/tmp/project_app_name_and_env/manage.py test test example_app1.tests.test_file:Example3.double_dummy"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
+
+    def test_get_command_to_run_the_current_class_when_project_name_contains_the_app_name(self):
+        current_dir = "/tmp/project_contains_app_name/app_name/tests/test_file.py"
+        current_line = 14
+        current_buffer = self.build_buffer_helper()
+        expected_return_value = "/tmp/project_contains_app_name/manage.py test app_name.tests.test_file:Example1"
+        command_returned = sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
+        self.assertEqual(command_returned, expected_return_value)
 
     def build_buffer_helper(self):
         with open("dummy_test_file.py", "r") as f:

@@ -91,8 +91,8 @@ def get_app_name(current_dir):
 def get_dot_notation_path_to_test(current_dir):
     app_name = get_app_name(current_dir)
     if app_name:
-        path_to_tests = current_dir.split(app_name)[1]
-        return ".".join(path_to_tests[1:].split("/")[:-1])
+        path_to_tests = current_dir.split(os.sep + app_name + os.sep)[1]
+        return ".".join(path_to_tests.split("/")[:-1])
     return False
 
 
