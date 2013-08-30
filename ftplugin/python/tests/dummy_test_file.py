@@ -5,13 +5,16 @@ class Example1(object):
 
     def dummy1(self):
         print('This is a test1')
+        strange.object.class()
         print('This is a test2')
         print('This is a test3')
+        some_kind_of_function_class ("things")
         print('This is a test4')
         print('This is a test5')
 
     def dummy2(self):
         print('This is a testA')
+        some_kind_of_function_class("things")
         print('This is a testB')
         print('This is a testC')
         print('This is a testD')

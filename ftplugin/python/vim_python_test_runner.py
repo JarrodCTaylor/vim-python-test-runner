@@ -101,30 +101,25 @@ def get_file_name(current_dir):
     return path_parts[-1].split(".")[0]
 
 
-def get_class_name(class_line):
-    class_name = re.search(r"class (?P<class_name>.+)\(", class_line)
-    return class_name.group(1)
-
-
 def get_current_class(current_line_index, current_buffer):
+    class_regex = re.compile(r"^class (?P<class_name>.+)\(")
     for line in xrange(current_line_index - 1, -1, -1):
-        if "class " in current_buffer[line]:
-            return get_class_name(current_buffer[line])
-    return "You don't appear to be in a class"
-
-
-def get_method_name(method_line):
-    method_name = re.search(r"def (?P<method_name>.+)\(", method_line)
-    return method_name.group(1)
+        if class_regex.search(current_buffer[line]) is not None:
+            class_name = class_regex.search(current_buffer[line])
+            return class_name.group(1)
+    return False
 
 
 def get_current_method(current_line_index, current_buffer):
+    class_regex = re.compile(r"^class (?P<class_name>.+)\(")
+    method_regex = re.compile(r"def (?P<method_name>.+)\(")
     for line in xrange(current_line_index - 1, -1, -1):
-        if "class " in current_buffer[line]:
-            return "You don't appear to be in a method"
-        if "def " in current_buffer[line]:
-            return get_method_name(current_buffer[line])
-    return "You don't appear to be in a method"
+        if class_regex.search(current_buffer[line]) is not None:
+            return False
+        if method_regex.search(current_buffer[line]) is not None:
+            method_name = method_regex.search(current_buffer[line])
+            return method_name.group(1)
+    return False
 
 
 def get_json_field_from_config_file(current_dir, field_name):

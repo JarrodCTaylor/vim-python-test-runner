@@ -119,27 +119,26 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         self.assertEqual(return_value, False)
 
     def test_get_valid_class_name(self):
-        current_line1 = 14
+        current_line1 = 17
         current_line2 = 24
         current_buffer = self.build_buffer_helper()
         self.assertEqual("Example1", sut.get_current_class(current_line1, current_buffer))
         self.assertEqual("Example2", sut.get_current_class(current_line2, current_buffer))
 
-    def test_get_not_in_class_message(self):
+    def test_get_current_class_returns_false_when_not_in_class(self):
         current_buffer = self.build_buffer_helper()
-        expected_return_value = "You don't appear to be in a class"
-        self.assertEqual(expected_return_value, sut.get_current_class(2, current_buffer))
+        self.assertEqual(False, sut.get_current_class(2, current_buffer))
 
     def test_get_valid_method_name(self):
         should_return_dummy2 = 15
-        should_return_dummy1b = 24
+        should_return_dummy1b = 27
         current_buffer = self.build_buffer_helper()
         self.assertEqual("dummy2", sut.get_current_method(should_return_dummy2, current_buffer))
         self.assertEqual("dummy1b", sut.get_current_method(should_return_dummy1b, current_buffer))
 
-    def test_get_not_in_method_message(self):
+    def test_get_current_method_returns_false_when_not_in_method_message(self):
         current_buffer = self.build_buffer_helper()
-        self.assertEqual("You don't appear to be in a method", sut.get_current_method(22, current_buffer))
+        self.assertEqual(False, sut.get_current_method(25, current_buffer))
 
     def test_get_app_name(self):
         app_name = sut.get_json_field_from_config_file("/tmp/project_app_only/example_app1/tests", "app_name")
@@ -211,69 +210,69 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
 
     def test_get_command_to_run_the_current_class_with_manage_py_app_name_but_no_env_specified(self):
         current_dir = '/tmp/project_app_only/example_app1/tests/test_file.py'
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = "/tmp/project_app_only/manage.py test example_app1.tests.test_file:Example1"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_class_with_manage_py_app_name_and_env_specified(self):
         current_dir = '/tmp/project_app_name_and_env/example_app1/tests/test_file.py'
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = "/tmp/project_app_name_and_env/manage.py test test example_app1.tests.test_file:Example1"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_class_when_config_not_properly_formated_no_app_name(self):
         current_dir = '/tmp/bad_project_no_app/example_app1/tests/test_file.py'
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = ".vim-django does not exist"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_class_when_config_not_present(self):
         current_dir = '/tmp/bad_project_no_app/example_app1/tests/test_file.py'
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = ".vim-django does not exist"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_class_when_manage_py_not_found(self):
         current_dir = '/tmp/bad_project_no_files/example_app1/tests/test_file.py'
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         self.assertEqual("Not Django", sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_method_with_manage_py_app_name_but_no_env_specified(self):
         current_dir = '/tmp/project_app_only/example_app1/tests/test_file.py'
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = "/tmp/project_app_only/manage.py test example_app1.tests.test_file:Example1.dummy2"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_method_with_manage_py_app_name_and_env_specified(self):
         current_dir = '/tmp/project_app_name_and_env/example_app1/tests/test_file.py'
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = "/tmp/project_app_name_and_env/manage.py test test example_app1.tests.test_file:Example1.dummy2"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_method_when_config_not_properly_formated(self):
         current_dir = '/tmp/bad_project_no_app/example_app1/tests/test_file.py'
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = ".vim-django does not exist"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_method_when_config_not_present(self):
         current_dir = '/tmp/bad_project_no_app/example_app1/tests/test_file.py'
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = ".vim-django does not exist"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
 
     def test_get_command_to_run_the_current_method_when_manage_py_not_found(self):
         current_dir = '/tmp/bad_project_no_files/example_app1/tests/test_file.py'
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = "Not Django"
         self.assertEqual(expected_return_value, sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer))
@@ -292,7 +291,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
 
     def test_get_command_to_run_the_current_class_when_multiple_apps_are_listed_and_a_valid_app_name_is_in_config_file(self):
         current_dir = "/tmp/project_multiple_apps/example_app1/tests/test_file.py"
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = "/tmp/project_multiple_apps/manage.py test example_app1.tests.test_file:Example1"
         command_returned = sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
@@ -300,7 +299,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
 
     def test_get_command_to_run_the_current_method_when_multiple_apps_are_listed_and_a_valid_app_name_is_in_config_file(self):
         current_dir = "/tmp/project_multiple_apps/example_app1/tests/test_file.py"
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = "/tmp/project_multiple_apps/manage.py test example_app1.tests.test_file:Example1.dummy2"
         command_returned = sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer)
@@ -320,7 +319,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
 
     def test_get_command_to_run_the_current_class_when_multiple_apps_are_listed_and_a_valid_app_name_is_not_in_config_file(self):
         current_dir = "/tmp/bad_project_multiple_invalid_apps/example_app1/tests/test_file.py"
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = ".vim-django does not exist"
         command_returned = sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
@@ -328,7 +327,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
 
     def test_get_command_to_run_the_current_method_when_multiple_apps_are_listed_and_a_valid_app_name_is_not_in_config_file(self):
         current_dir = "/tmp/bad_project_multiple_invalid_apps/example_app1/tests/test_file.py"
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = ".vim-django does not exist"
         command_returned = sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer)
@@ -348,7 +347,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
 
     def test_get_command_to_run_current_class_when_tests_are_in_a_nested_directory(self):
         current_dir = "/tmp/project_nested_test_dirs/example_app1/tests/nested1/test_nested_file.py"
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = "/tmp/project_nested_test_dirs/manage.py test example_app1.tests.nested1.test_nested_file:Example1"
         command_returned = sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
@@ -356,7 +355,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
 
     def test_get_command_to_run_current_method_when_tests_are_in_a_nested_directory(self):
         current_dir = "/tmp/project_nested_test_dirs/example_app1/tests/nested1/test_nested_file.py"
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = "/tmp/project_nested_test_dirs/manage.py test example_app1.tests.nested1.test_nested_file:Example1.dummy2"
         command_returned = sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer)
@@ -378,7 +377,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
 
     def test_get_command_to_run_the_current_class_when_project_name_contains_the_app_name(self):
         current_dir = "/tmp/project_contains_app_name/app_name/tests/test_file.py"
-        current_line = 14
+        current_line = 17
         current_buffer = self.build_buffer_helper()
         expected_return_value = "/tmp/project_contains_app_name/manage.py test app_name.tests.test_file:Example1"
         command_returned = sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
