@@ -80,17 +80,21 @@ folder structure the config file would be saved in the following location.
 
 Config file contents
 ------------------
-The contents of the file are minimal. You list the app names that you will be 
-running tests for and optionally if you have your project configured for different 
-environments you may specify that also 
+The contents of the file are minimal. The only required field is a list of the app
+names that you will be running tests for. Optionally if you have your project 
+configured for different environments you may specify which one to run tests for.
+Also you may use the built in django-nose failfast option by specifying failfast 
+to be true, it is false by default and may be omitted. 
 
 Using the example project above we would set the app name to "app1, app2" 
 The environment field is optional. If you don't know what it should be then 
-you don't need to use it. 
+you don't need to use it. We are also saying that we want the test to use 
+the fail fast option.
 
 ```
 {"app_name": "app1, app2",
- "environment": "OptionalNameOfEnv"}
+ "environment": "OptionalNameOfEnv",
+ "failfast": true}
 ```
 *NOTE* be sure to use double quotes in the config file as it is parsed as json
 

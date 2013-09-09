@@ -12,10 +12,16 @@ def get_command_to_run_the_current_app(current_dir):
     app_name = get_app_name(current_dir)
     env_name = get_json_field_from_config_file(current_dir, "environment")
 
+    failfast = get_json_field_from_config_file(current_dir, "failfast")
+    if failfast:
+        failfast = "--failfast "
+    else:
+        failfast = ""
+
     if app_name and env_name:
-        return ("{0} {1} test {2}".format(path_to_manage, env_name, app_name))
+        return ("{0} {1} test {2}{3}".format(path_to_manage, env_name, failfast, app_name))
     elif app_name:
-        return ("{0} test {1}".format(path_to_manage, app_name))
+        return ("{0} test {1}{2}".format(path_to_manage, failfast, app_name))
     else:
         return ".vim-django does not exist"
 

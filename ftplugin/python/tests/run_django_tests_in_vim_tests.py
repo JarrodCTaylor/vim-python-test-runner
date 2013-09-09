@@ -20,6 +20,8 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         os.makedirs("/tmp/bad_project_multiple_invalid_apps/example_app1/tests/")
         os.makedirs("/tmp/project_nested_test_dirs/example_app1/tests/nested1/")
         os.makedirs("/tmp/project_contains_app_name/app_name/tests/")
+        os.makedirs("/tmp/project_failfast/example_app/tests/")
+        os.makedirs("/tmp/bad_project_failfast/example_app/tests/")
 
         with open("/tmp/project_app_only/.vim-django", "w") as f:
             f.write('{"app_name": "example_app1"}')
@@ -64,6 +66,16 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         with open("/tmp/project_contains_app_name/manage.py", "w") as f:
             f.write("#Place holder")
 
+        with open("/tmp/project_failfast/.vim-django", "w") as f:
+            f.write('{"app_name": "example_app", "failfast": true}')
+        with open("/tmp/project_failfast/manage.py", "w") as f:
+            f.write("#Place holder")
+
+        with open("/tmp/bad_project_failfast/.vim-django", "w") as f:
+            f.write('{"app_name": "example_app", "failfast": false}')
+        with open("/tmp/bad_project_failfast/manage.py", "w") as f:
+            f.write("#Place holder")
+
     def tearDown(self):
         os.remove("/tmp/project_app_only/manage.py")
         os.remove("/tmp/project_app_only/.vim-django")
@@ -91,6 +103,12 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         os.remove("/tmp/project_contains_app_name/.vim-django")
         os.remove("/tmp/project_contains_app_name/manage.py")
 
+        os.remove("/tmp/project_failfast/.vim-django")
+        os.remove("/tmp/project_failfast/manage.py")
+
+        os.remove("/tmp/bad_project_failfast/.vim-django")
+        os.remove("/tmp/bad_project_failfast/manage.py")
+
         os.removedirs("/tmp/project_app_only/example_app1/tests/")
         os.removedirs("/tmp/project_app_name_and_env/example_app1/tests/")
         os.removedirs("/tmp/bad_project_no_files/example_app1/tests/")
@@ -101,6 +119,8 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         os.removedirs("/tmp/bad_project_multiple_invalid_apps/example_app1/tests/")
         os.removedirs("/tmp/project_nested_test_dirs/example_app1/tests/nested1/")
         os.removedirs("/tmp/project_contains_app_name/app_name/tests/")
+        os.removedirs("/tmp/project_failfast/example_app/tests/")
+        os.removedirs("/tmp/bad_project_failfast/example_app/tests/")
 
     def test_find_vim_django_file(self):
         return_value = sut.find_path_to_file("/tmp/project_app_only/example_app1/tests", ".vim-django")
@@ -382,6 +402,16 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         expected_return_value = "/tmp/project_contains_app_name/manage.py test app_name.tests.test_file:Example1"
         command_returned = sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
         self.assertEqual(command_returned, expected_return_value)
+
+    def test_get_command_to_run_the_current_app_when_failfast_is_set_to_true_in_config_file(self):
+        current_dir = '/tmp/project_failfast/example_app/tests/test_file.py'
+        command_to_run = sut.get_command_to_run_the_current_app(current_dir)
+        self.assertEqual("/tmp/project_failfast/manage.py test --failfast example_app", command_to_run)
+
+    def test_get_command_to_run_the_current_app_when_failfast_is_set_to_a_bad_value_in_config_file(self):
+        current_dir = '/tmp/bad_project_failfast/example_app/tests/test_file.py'
+        command_to_run = sut.get_command_to_run_the_current_app(current_dir)
+        self.assertEqual("/tmp/bad_project_failfast/manage.py test example_app", command_to_run)
 
     def build_buffer_helper(self):
         with open("dummy_test_file.py", "r") as f:
