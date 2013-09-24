@@ -413,9 +413,47 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         command_to_run = sut.get_command_to_run_the_current_app(current_dir)
         self.assertEqual("/tmp/bad_project_failfast/manage.py test example_app", command_to_run)
 
+    def test_get_command_to_run_current_app_writes_command_to_cache_file_when_successfully_called(self):
+        current_dir = '/tmp/project_app_only/example_app1/tests/test_file.py'
+        command_to_run = sut.get_command_to_run_the_current_app(current_dir)
+        last_command = self.get_cached_command()
+        self.assertEqual(command_to_run, last_command)
+
+    def test_get_command_to_run_current_file_writes_command_to_cache_file_when_successfully_called(self):
+        current_dir = '/tmp/project_app_only/example_app1/tests/test_file.py'
+        command_to_run = sut.get_command_to_run_the_current_file(current_dir)
+        last_command = self.get_cached_command()
+        self.assertEqual(command_to_run, last_command)
+
+    def test_get_command_to_run_current_class_writes_command_to_cache_file_when_successfully_called(self):
+        current_dir = '/tmp/project_app_only/example_app1/tests/test_file.py'
+        current_line = 17
+        current_buffer = self.build_buffer_helper()
+        command_to_run = sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
+        last_command = self.get_cached_command()
+        self.assertEqual(command_to_run, last_command)
+
+    def test_get_command_to_run_current_method_writes_command_to_cache_file_when_successfully_called(self):
+        current_dir = '/tmp/project_app_only/example_app1/tests/test_file.py'
+        current_line = 17
+        current_buffer = self.build_buffer_helper()
+        command_to_run = sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer)
+        last_command = self.get_cached_command()
+        self.assertEqual(command_to_run, last_command)
+
+    def test_get_command_to_rerun_last_tests_returns_the_command_last_used_to_run_tests(self):
+        current_dir = '/tmp/project_app_only/example_app1/tests/test_file.py'
+        command_to_run = sut.get_command_to_run_the_current_app(current_dir)
+        last_command = sut.get_command_to_rerun_last_tests()
+        self.assertEqual(command_to_run, last_command)
+
     def build_buffer_helper(self):
         with open("dummy_test_file.py", "r") as f:
             current_buffer = []
             for line in f.readlines():
                 current_buffer.append(line)
         return current_buffer
+
+    def get_cached_command(self):
+        with open("/tmp/vim_python_test_runner_cache", "r") as f:
+            return f.read()

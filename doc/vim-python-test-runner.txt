@@ -1,6 +1,6 @@
 *vim-python-test-runner.txt* A Django aware testsrunner for vim.
-Allows you to run Django unit tests that require database interactions, with 
-django-nose as well as unit tests outside of a Django project with nosetests. 
+Allows you to run Django unit tests that require database interactions, with
+django-nose as well as unit tests outside of a Django project with nosetests.
 
 ===============================================================================
 CONTENTS                                                 *test-runner-contents*
@@ -20,34 +20,34 @@ CONTENTS                                                 *test-runner-contents*
 
 A simple way of running tests for your python files from within VIM.
 
-This plugin was created to allow running Django tests with django-nose that 
-require database interaction from within Vim. Thus avoiding the need to toggle 
-between your vim session and the shell for longer periods of time. It will 
-also run your regular python unit tests with nosetests as well when not 
+This plugin was created to allow running Django tests with django-nose that
+require database interaction from within Vim. Thus avoiding the need to toggle
+between your vim session and the shell for longer periods of time. It will
+also run your regular python unit tests with nosetests as well when not
 working on a Django project.
 
 ===============================================================================
 2. Installation                                      *test-runner-installation*
 
 The recommended installation method is vundle https://github.com/gmarik/vundle
-however installation should also work via pathogen 
+however installation should also work via pathogen
 https://github.com/tpope/vim-pathogen
 
 ===============================================================================
 3. Requirements                                      *test-runner-requirements*
 
-You need a VIM version that was compiled with python support, which is typical 
-for most distributions on Linux/Mac.  You can check this by running 
+You need a VIM version that was compiled with python support, which is typical
+for most distributions on Linux/Mac.  You can check this by running
 ``vim --version | grep +python``
 if you get a hit you are in business.
 
-Tests are ran with either django-nose or nosetest so these will need to be 
-pip installed in order for the plugin to function properly. 
+Tests are ran with either django-nose or nosetest so these will need to be
+pip installed in order for the plugin to function properly.
 
 ===============================================================================
 4. Usage                                                    *test-runner-usage*
 
-The plugin provides seven commands:
+The plugin provides eight commands:
 
     DjangoTestApp
     DjangoTestFile
@@ -56,12 +56,13 @@ The plugin provides seven commands:
     NosetestFile
     NosetestClass
     NosetestMethod
+    RerunLastTests
 
-All arguments can be tab-completed. Ensure that your cursor is within a 
+All arguments can be tab-completed. Ensure that your cursor is within a
 file, class or method as appropriate for the command being called.
 
-For ease of usage you can map the above actions to a shortcut. For example, 
-if you wanted leader mappings you could set something like the following in 
+For ease of usage you can map the above actions to a shortcut. For example,
+if you wanted leader mappings you could set something like the following in
 your vimrc:
 
     nnoremap<Leader>da :DjangoTestApp<CR>
@@ -71,13 +72,14 @@ your vimrc:
     nnoremap<Leader>nf :NosetestFile<CR>
     nnoremap<Leader>nc :NosetestClass<CR>
     nnoremap<Leader>nm :NosetestMethod<CR>
+    nnoremap<Leader>rr :RerunLastTests<CR>
 
 ===============================================================================
 5. Config File                                        *test-runner-config-file*
 
-To make use of the plugin for Django projects you will need to create a small 
+To make use of the plugin for Django projects you will need to create a small
 config file named ``.vim-django`` in the root of your project that defines some
-information about the apps you would like to run tests for. Assuming a basic 
+information about the apps you would like to run tests for. Assuming a basic
 folder structure the config file would be saved in the following location.
 ```
 ── Project Root
@@ -96,14 +98,14 @@ folder structure the config file would be saved in the following location.
 5.1 Config file contents                                  *config-file-contents*
 
 The contents of the file are minimal. The only required field is a list of the app
-names that you will be running tests for. Optionally if you have your project 
+names that you will be running tests for. Optionally if you have your project
 configured for different environments you may specify which one to run tests for.
-Also you may use the built in django-nose failfast option by specifying failfast 
-to be true, it is false by default and may be omitted. 
+Also you may use the built in django-nose failfast option by specifying failfast
+to be true, it is false by default and may be omitted.
 
-Using the example project above we would set the app name to "app1, app2" 
-The environment field is optional. If you don't know what it should be then 
-you don't need to use it. We are also saying that we want the test to use 
+Using the example project above we would set the app name to "app1, app2"
+The environment field is optional. If you don't know what it should be then
+you don't need to use it. We are also saying that we want the test to use
 the fail fast option.
 
 ```
@@ -117,7 +119,7 @@ the fail fast option.
 --------------------------------------------------------------------------------
 5.2 Outside of Django                           *plugin-usage-outside-of-django*
 
-Nothing other than nose is required to use this plugin for tests that are 
+Nothing other than nose is required to use this plugin for tests that are
 outside of a Django application.
 
 ===============================================================================
@@ -125,7 +127,7 @@ outside of a Django application.
 
 The MIT License (MIT)
 
-Copyright (c) 2013 Jarrod Taylor 
+Copyright (c) 2013 Jarrod Taylor
 <jarrod [dot] c [dot] taylor [at] gmail [dot] com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

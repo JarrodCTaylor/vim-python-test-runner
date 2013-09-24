@@ -35,6 +35,8 @@ def get_proper_command(desired_command):
     elif desired_command == "nose_method":
         current_directory = vim.current.buffer.name
         return get_command_to_run_current_method_with_nosetests(current_directory, current_line_index, vim.current.buffer)
+    elif desired_command == "rerun":
+        return get_command_to_rerun_last_tests()
 
 def check_for_errors(command_to_run):
     if ".vim-django does not exist" == command_to_run:
@@ -46,7 +48,7 @@ def check_for_errors(command_to_run):
     return True
 
 def run_desired_command(command_to_run):
-    if "nose" in vim.eval("a:command_to_run"):
+    if "nose" in vim.eval("a:command_to_run") or "nose" in command_to_run:
         vim.command(command_to_run)
     elif _platform == 'linux' or _platform == 'linux2':
         vim.command(":!python {0}".format(command_to_run))
@@ -68,3 +70,4 @@ command! DjangoTestMethod call RunDesiredTests("django_method")
 command! NosetestFile call RunDesiredTests("nose_file")
 command! NosetestClass call RunDesiredTests("nose_class")
 command! NosetestMethod call RunDesiredTests("nose_method")
+command! RerunLastTests call RunDesiredTests("rerun")

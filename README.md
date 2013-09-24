@@ -2,10 +2,10 @@ vim-python-test-runner.vim
 ==========
 A simple way of running tests for your python files from within VIM.
 
-This plugin was created to allow running Django tests with django-nose that 
-require database interaction from within Vim. Thus avoiding the need to toggle 
-between your vim session and the shell for longer periods of time. It will 
-also run your regular python unit tests with nosetests as well when not 
+This plugin was created to allow running Django tests with django-nose that
+require database interaction from within Vim. Thus avoiding the need to toggle
+between your vim session and the shell for longer periods of time. It will
+also run your regular python unit tests with nosetests as well when not
 working on a Django project.
 
 INSTALLATION
@@ -17,18 +17,18 @@ however installation should also work via pathogen <https://github.com/tpope/vim
 REQUIREMENTS
 ============
 
-You need a VIM version that was compiled with python support, which is typical 
-for most distributions on Linux/Mac.  You can check this by running 
+You need a VIM version that was compiled with python support, which is typical
+for most distributions on Linux/Mac.  You can check this by running
 ``vim --version | grep +python``
 if you get a hit you are in business.
 
-Tests are ran with either django-nose or nosetest so these will need to be 
-pip installed in order for the plugin to function properly. 
+Tests are ran with either django-nose or nosetest so these will need to be
+pip installed in order for the plugin to function properly.
 
 Usage
 =====
 
-The plugin provides seven commands:
+The plugin provides eight commands:
 
     DjangoTestApp
     DjangoTestFile
@@ -37,12 +37,13 @@ The plugin provides seven commands:
     NosetestFile
     NosetestClass
     NosetestMethod
+    RerunLastTests
 
-All arguments can be tab-completed. Ensure that your cursor is within a 
+All arguments can be tab-completed. Ensure that your cursor is within a
 file, class or method as appropriate for the command being called.
 
-For ease of usage you can map the above actions to a shortcut. For example, 
-if you wanted leader mappings you could set something like the following in 
+For ease of usage you can map the above actions to a shortcut. For example,
+if you wanted leader mappings you could set something like the following in
 your vimrc:
 
     nnoremap<Leader>da :DjangoTestApp<CR>
@@ -52,18 +53,19 @@ your vimrc:
     nnoremap<Leader>nf :NosetestFile<CR>
     nnoremap<Leader>nc :NosetestClass<CR>
     nnoremap<Leader>nm :NosetestMethod<CR>
+    nnoremap<Leader>rr :RerunLastTests<CR>
 
 ###NOTE to OS X users
-The django commands need to be ran from vim with sudo on OS X so the first 
-time you run one of the Django test commands you will be asked by the shell 
-for your password. You should only have to enter it once then you will be able 
+The django commands need to be ran from vim with sudo on OS X so the first
+time you run one of the Django test commands you will be asked by the shell
+for your password. You should only have to enter it once then you will be able
 to run subsequent commands in that buffer without reentering your password.
 
 Required Configuration File for Django Tests
 --------------------------------------------
-To make use of the plugin for Django projects you will need to create a small 
+To make use of the plugin for Django projects you will need to create a small
 config file named ``.vim-django`` in the root of your project that defines some
-information about the apps you would like to run tests for. Assuming a basic 
+information about the apps you would like to run tests for. Assuming a basic
 folder structure the config file would be saved in the following location.
 ```
 ── Project Root
@@ -81,14 +83,14 @@ folder structure the config file would be saved in the following location.
 Config file contents
 ------------------
 The contents of the file are minimal. The only required field is a list of the app
-names that you will be running tests for. Optionally if you have your project 
+names that you will be running tests for. Optionally if you have your project
 configured for different environments you may specify which one to run tests for.
-Also you may use the built in django-nose failfast option by specifying failfast 
-to be true, it is false by default and may be omitted. 
+Also you may use the built in django-nose failfast option by specifying failfast
+to be true, it is false by default and may be omitted.
 
-Using the example project above we would set the app name to "app1, app2" 
-The environment field is optional. If you don't know what it should be then 
-you don't need to use it. We are also saying that we want the test to use 
+Using the example project above we would set the app name to "app1, app2"
+The environment field is optional. If you don't know what it should be then
+you don't need to use it. We are also saying that we want the test to use
 the fail fast option.
 
 ```
@@ -100,6 +102,6 @@ the fail fast option.
 
 Outside of Django
 -----------------
-Nothing other than nose is required to use this plugin for tests that are 
+Nothing other than nose is required to use this plugin for tests that are
 outside of a Django application.
 

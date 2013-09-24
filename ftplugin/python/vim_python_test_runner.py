@@ -19,9 +19,13 @@ def get_command_to_run_the_current_app(current_dir):
         failfast = ""
 
     if app_name and env_name:
-        return ("{0} {1} test {2}{3}".format(path_to_manage, env_name, failfast, app_name))
+        command = "{0} {1} test {2}{3}".format(path_to_manage, env_name, failfast, app_name)
+        write_test_command_to_cache_file(command)
+        return (command)
     elif app_name:
-        return ("{0} test {1}{2}".format(path_to_manage, failfast, app_name))
+        command = "{0} test {1}{2}".format(path_to_manage, failfast, app_name)
+        write_test_command_to_cache_file(command)
+        return (command)
     else:
         return ".vim-django does not exist"
 
@@ -35,7 +39,9 @@ def get_command_to_run_the_current_file(current_dir):
     elif ".vim-django does not exist" in command_to_current_app or not path_to_tests:
         return ".vim-django does not exist"
     else:
-        return command_to_current_app + "." + path_to_tests + "." + file_name
+        command = command_to_current_app + "." + path_to_tests + "." + file_name
+        write_test_command_to_cache_file(command)
+        return command
 
 
 def get_command_to_run_the_current_class(current_dir, current_line, current_buffer):
@@ -46,7 +52,9 @@ def get_command_to_run_the_current_class(current_dir, current_line, current_buff
     elif ".vim-django does not exist" in command_to_current_file:
         return ".vim-django does not exist"
     else:
-        return get_command_to_run_the_current_file(current_dir) + ":" + class_name
+        command = get_command_to_run_the_current_file(current_dir) + ":" + class_name
+        write_test_command_to_cache_file(command)
+        return command
 
 
 def get_command_to_run_the_current_method(current_dir, current_line, current_buffer):
@@ -57,23 +65,41 @@ def get_command_to_run_the_current_method(current_dir, current_line, current_buf
     elif ".vim-django does not exist" in command_to_current_class:
         return ".vim-django does not exist"
     else:
-        return command_to_current_class + "." + method_name
+        command = command_to_current_class + "." + method_name
+        write_test_command_to_cache_file(command)
+        return command
 
 
 def get_command_to_run_current_file_with_nosetests(path_to_current_file):
-    return ":!nosetests {0}".format(path_to_current_file)
+    command = ":!nosetests {0}".format(path_to_current_file)
+    write_test_command_to_cache_file(command)
+    return command
 
 
 def get_command_to_run_current_class_with_nosetests(path_to_current_file, current_line, current_buffer):
     run_file = get_command_to_run_current_file_with_nosetests(path_to_current_file)
     current_class = get_current_class(current_line, current_buffer)
-    return run_file + ":" + current_class
+    command = run_file + ":" + current_class
+    write_test_command_to_cache_file(command)
+    return command
 
 
 def get_command_to_run_current_method_with_nosetests(path_to_current_file, current_line, current_buffer):
     run_class = get_command_to_run_current_class_with_nosetests(path_to_current_file, current_line, current_buffer)
     current_method = get_current_method(current_line, current_buffer)
-    return run_class + "." + current_method
+    command = run_class + "." + current_method
+    write_test_command_to_cache_file(command)
+    return command
+
+
+def get_command_to_rerun_last_tests():
+    with open("/tmp/vim_python_test_runner_cache", "r") as f:
+        return f.read()
+
+
+def write_test_command_to_cache_file(command):
+    with open("/tmp/vim_python_test_runner_cache", "w") as f:
+        f.write(command)
 
 
 def find_path_to_file(current_dir, file_to_look_for):
