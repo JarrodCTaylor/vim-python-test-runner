@@ -2,41 +2,33 @@ if !has('python')
     finish
 endif
 
+" -----------------------------
+" Add our directory to the path
+" -----------------------------
+python import sys
+python import vim
+python sys.path.append(vim.eval('expand("<sfile>:h")'))
+
 function! RunDesiredTests(command_to_run)
 python << endPython
 import os
-import vim
-import inspect
 from sys import platform as _platform
-# Add our python script to the path for importing
-for path in vim.eval('&runtimepath').split(','):
-    if 'vim-python' in path and "after" not in path:
-        sys.path.append(os.path.join(path, 'ftplugin', 'python'))
 from vim_python_test_runner import *
 
 def get_proper_command(desired_command):
     current_directory = os.sep.join([dir for dir in vim.current.buffer.name.split(os.sep) if dir])
     current_line_index = vim.current.window.cursor[0]
-
-    if desired_command == "django_app":
-        return get_command_to_run_the_current_app(current_directory)
-    elif desired_command == "django_file":
-        return get_command_to_run_the_current_file(current_directory)
-    elif desired_command == "django_class":
-        return get_command_to_run_the_current_class(current_directory, current_line_index, vim.current.buffer)
-    elif desired_command == "django_method":
-        return get_command_to_run_the_current_method(current_directory, current_line_index, vim.current.buffer)
-    elif desired_command == "nose_file":
-        current_directory = vim.current.buffer.name
-        return get_command_to_run_current_file_with_nosetests(current_directory)
-    elif desired_command == "nose_class":
-        current_directory = vim.current.buffer.name
-        return get_command_to_run_current_class_with_nosetests(current_directory, current_line_index, vim.current.buffer)
-    elif desired_command == "nose_method":
-        current_directory = vim.current.buffer.name
-        return get_command_to_run_current_method_with_nosetests(current_directory, current_line_index, vim.current.buffer)
-    elif desired_command == "rerun":
-        return get_command_to_rerun_last_tests()
+    FUNCTIONS = {
+        "django_app": lambda: get_command_to_run_the_current_app(current_directory),
+        "django_file": lambda: get_command_to_run_the_current_file(current_directory),
+        "django_class": lambda: get_command_to_run_the_current_class(current_directory, current_line_index, vim.current.buffer),
+        "django_method": lambda: get_command_to_run_the_current_method(current_directory, current_line_index, vim.current.buffer),
+        "nose_file": lambda: get_command_to_run_current_file_with_nosetests(vim.current.buffer.name),
+        "nose_class": lambda: get_command_to_run_current_class_with_nosetests(vim.current.buffer.name, current_line_index, vim.current.buffer),
+        "nose_method": lambda: get_command_to_run_current_method_with_nosetests(vim.current.buffer.name, current_line_index, vim.current.buffer),
+        "rerun": lambda: get_command_to_rerun_last_tests()
+    }
+    return FUNCTIONS[desired_command]()
 
 def check_for_errors(command_to_run):
     if ".vim-django does not exist" == command_to_run:
@@ -47,7 +39,7 @@ def check_for_errors(command_to_run):
         return False
     return True
 
-def run_desired_command(command_to_run):
+def run_desired_command_for_os(command_to_run):
     if "nose" in vim.eval("a:command_to_run") or "nose" in command_to_run:
         vim.command(command_to_run)
     elif _platform == 'linux' or _platform == 'linux2':
@@ -55,11 +47,13 @@ def run_desired_command(command_to_run):
     elif _platform == 'darwin':
         vim.command(":!sudo python {0}".format(command_to_run))
 
-command_to_run = get_proper_command(vim.eval("a:command_to_run"))
-proceede = check_for_errors(command_to_run)
-if proceede:
-    run_desired_command(command_to_run)
+def main():
+    command_to_run = get_proper_command(vim.eval("a:command_to_run"))
+    proceede = check_for_errors(command_to_run)
+    if proceede:
+        run_desired_command_for_os(command_to_run)
 
+main()
 endPython
 endfunction
 
