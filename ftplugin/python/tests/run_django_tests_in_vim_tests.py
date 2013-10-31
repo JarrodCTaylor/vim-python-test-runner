@@ -1,9 +1,6 @@
 import os
-import sys
 import unittest
 
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 import vim_python_test_runner as sut
 
 
