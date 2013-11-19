@@ -53,6 +53,7 @@ def main():
     if proceede:
         run_desired_command_for_os(command_to_run)
 
+vim.command('wall')
 main()
 endPython
 endfunction
