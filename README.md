@@ -96,8 +96,8 @@ Config file contents
 The contents of the file are minimal. The only required field is a list of the app
 names that you will be running tests for. Optionally if you have your project
 configured for different environments you may specify which one to run tests for.
-Also you may use the built in django-nose failfast option by specifying failfast
-to be true, it is false by default and may be omitted.
+Also you may use the built in django-nose failfast and nocapture options by specifying
+failfast or nocapture to be true. They are false by default and may be omitted.
 
 Using the example project above we would set the app name to "app1, app2"
 The environment field is optional. If you don't know what it should be then

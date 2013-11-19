@@ -19,6 +19,8 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         os.makedirs("/tmp/project_contains_app_name/app_name/tests/")
         os.makedirs("/tmp/project_failfast/example_app/tests/")
         os.makedirs("/tmp/bad_project_failfast/example_app/tests/")
+        os.makedirs("/tmp/project_nocapture/example_app/tests/")
+        os.makedirs("/tmp/bad_project_nocapture/example_app/tests/")
         os.makedirs("/tmp/project_with_dots/example.app.something/tests/")
 
         with open("/tmp/project_app_only/.vim-django", "w") as f:
@@ -74,6 +76,16 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         with open("/tmp/bad_project_failfast/manage.py", "w") as f:
             f.write("#Place holder")
 
+        with open("/tmp/project_nocapture/.vim-django", "w") as f:
+            f.write('{"app_name": "example_app", "nocapture": true}')
+        with open("/tmp/project_nocapture/manage.py", "w") as f:
+            f.write("#Place holder")
+
+        with open("/tmp/bad_project_nocapture/.vim-django", "w") as f:
+            f.write('{"app_name": "example_app", "nocapture": false}')
+        with open("/tmp/bad_project_nocapture/manage.py", "w") as f:
+            f.write("#Place holder")
+
         with open("/tmp/project_with_dots/.vim-django", "w") as f:
             f.write('{"app_name": "example.app.something"}')
         with open("/tmp/project_with_dots/manage.py", "w") as f:
@@ -112,6 +124,12 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         os.remove("/tmp/bad_project_failfast/.vim-django")
         os.remove("/tmp/bad_project_failfast/manage.py")
 
+        os.remove("/tmp/project_nocapture/.vim-django")
+        os.remove("/tmp/project_nocapture/manage.py")
+
+        os.remove("/tmp/bad_project_nocapture/.vim-django")
+        os.remove("/tmp/bad_project_nocapture/manage.py")
+
         os.remove("/tmp/project_with_dots/.vim-django")
         os.remove("/tmp/project_with_dots/manage.py")
 
@@ -127,6 +145,8 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         os.removedirs("/tmp/project_contains_app_name/app_name/tests/")
         os.removedirs("/tmp/project_failfast/example_app/tests/")
         os.removedirs("/tmp/bad_project_failfast/example_app/tests/")
+        os.removedirs("/tmp/project_nocapture/example_app/tests/")
+        os.removedirs("/tmp/bad_project_nocapture/example_app/tests/")
         os.removedirs("/tmp/project_with_dots/example.app.something/tests/")
 
     def test_find_vim_django_file(self):
@@ -419,6 +439,16 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         current_dir = '/tmp/bad_project_failfast/example_app/tests/test_file.py'
         command_to_run = sut.get_command_to_run_the_current_app(current_dir)
         self.assertEqual("/tmp/bad_project_failfast/manage.py test example_app", command_to_run)
+
+    def test_get_command_to_run_the_current_app_when_nocapture_is_set_to_true_in_config_file(self):
+        current_dir = '/tmp/project_nocapture/example_app/tests/test_file.py'
+        command_to_run = sut.get_command_to_run_the_current_app(current_dir)
+        self.assertEqual("/tmp/project_nocapture/manage.py test --nocapture example_app", command_to_run)
+
+    def test_get_command_to_run_the_current_app_when_nocapture_is_set_to_a_bad_value_in_config_file(self):
+        current_dir = '/tmp/bad_project_nocapture/example_app/tests/test_file.py'
+        command_to_run = sut.get_command_to_run_the_current_app(current_dir)
+        self.assertEqual("/tmp/bad_project_nocapture/manage.py test example_app", command_to_run)
 
     def test_get_command_to_run_current_app_writes_command_to_cache_file_when_successfully_called(self):
         current_dir = '/tmp/project_app_only/example_app1/tests/test_file.py'

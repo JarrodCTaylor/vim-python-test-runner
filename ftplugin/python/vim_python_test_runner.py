@@ -11,19 +11,17 @@ def get_command_to_run_the_current_app(current_dir):
 
     app_name = get_app_name(current_dir)
     env_name = get_json_field_from_config_file(current_dir, "environment")
-
     failfast = get_json_field_from_config_file(current_dir, "failfast")
-    if failfast:
-        failfast = "--failfast "
-    else:
-        failfast = ""
+    failfast = set_flag("failfast", failfast)
+    nocapture = get_json_field_from_config_file(current_dir, "nocapture")
+    nocapture = set_flag("nocapture", nocapture)
 
     if app_name and env_name:
-        command = "{0} {1} test {2}{3}".format(path_to_manage, env_name, failfast, app_name)
+        command = "{0} {1} test {2}{3}{4}".format(path_to_manage, env_name, failfast, nocapture, app_name)
         write_test_command_to_cache_file(command)
         return (command)
     elif app_name:
-        command = "{0} test {1}{2}".format(path_to_manage, failfast, app_name)
+        command = "{0} test {1}{2}{3}".format(path_to_manage, failfast, nocapture, app_name)
         write_test_command_to_cache_file(command)
         return (command)
     else:
@@ -162,3 +160,10 @@ def get_json_field_from_config_file(current_dir, field_name):
         return parsed_json[field_name]
     except Exception:
         return False
+
+
+def set_flag(flag, value):
+    if value:
+        return "--{0} ".format(flag)
+    else:
+        return ""
