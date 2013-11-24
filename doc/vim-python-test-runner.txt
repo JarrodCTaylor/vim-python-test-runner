@@ -12,6 +12,9 @@ CONTENTS                                                 *test-runner-contents*
     4. Usage .............................................. |test-runner-usage|
     5. Config File .................................. |test-runner-config-file|
         5.1 Config file contents........................ |config-file-contents|
+            5.1.1 ........................................... |required-fields|
+            5.1.2 ........................................... |optional-fields|
+            5.1.3 ............................ |vim-django-config-file-example|
         5.2 Outside of Django................. |plugin-usage-outside-of-django|
     6. Licence .......................................... |test-runner-licence|
     7. Bugs ................................................ |test-runner-bugs|
@@ -107,15 +110,33 @@ folder structure the config file would be saved in the following location.
 --------------------------------------------------------------------------------
 5.1 Config file contents                                  *config-file-contents*
 
-The contents of the file are minimal. The only required field is a list of the app
-names that you will be running tests for. Optionally if you have your project
-configured for different environments you may specify which one to run tests for.
-Also you may use the built in django-nose failfast and nocapture options by specifying 
-failfast or nocapture to be true. They are false by default and may be omitted.
+5.1.1                                                          *required-fields*
+
+The only required field is a list of the app names that you will be running
+tests for.
+`"app_name": "app1, app2"`
+
+5.1.2                                                          *optional-fields*
+
+Optional fields that can be set in the vim-django config file are as follows:
+- environment: If you have your project configured for different environments
+               you may specify which one to run tests for. Example
+               `"environment": "NameOfEnv"` If you don't know what it should be
+               then you don't need to use it.
+
+- failfast:  Enable the django-nose builtin failfast option by specifying
+             failfast to be true. Example `"failfast": true`
+
+- nocapture: Enable the django-nose builtin nocapture option by specifiying
+             nocapture to be true. Example `"nocapture": true`
+
+- create_results_buffer: If set to true the test results will be displayed in a
+                         split buffer. Example `"create_results_buffer": true`
+
+5.1.3                                           *vim-django-config-file-example*
 
 Using the example project above we would set the app name to "app1, app2"
-The environment field is optional. If you don't know what it should be then
-you don't need to use it. We are also saying that we want the test to use
+The environment field is optional.  We are also saying that we want the test to use
 the fail fast option.
 
 ```
@@ -124,7 +145,6 @@ the fail fast option.
  "failfast": true}
 ```
 *NOTE* be sure to use double quotes in the config file as it is parsed as json
-
 
 --------------------------------------------------------------------------------
 5.2 Outside of Django                           *plugin-usage-outside-of-django*

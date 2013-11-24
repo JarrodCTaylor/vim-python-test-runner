@@ -22,6 +22,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         os.makedirs("/tmp/project_nocapture/example_app/tests/")
         os.makedirs("/tmp/bad_project_nocapture/example_app/tests/")
         os.makedirs("/tmp/project_with_dots/example.app.something/tests/")
+        os.makedirs("/tmp/project_with_results_buffer/tests/")
 
         with open("/tmp/project_app_only/.vim-django", "w") as f:
             f.write('{"app_name": "example_app1"}')
@@ -91,6 +92,9 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         with open("/tmp/project_with_dots/manage.py", "w") as f:
             f.write("#Place holder")
 
+        with open("/tmp/project_with_results_buffer/.vim-django", "w") as f:
+            f.write('{"app_name": "example_app1", "create_results_buffer": true}')
+
     def tearDown(self):
         os.remove("/tmp/project_app_only/manage.py")
         os.remove("/tmp/project_app_only/.vim-django")
@@ -133,6 +137,8 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         os.remove("/tmp/project_with_dots/.vim-django")
         os.remove("/tmp/project_with_dots/manage.py")
 
+        os.remove("/tmp/project_with_results_buffer/.vim-django")
+
         os.removedirs("/tmp/project_app_only/example_app1/tests/")
         os.removedirs("/tmp/project_app_name_and_env/example_app1/tests/")
         os.removedirs("/tmp/bad_project_no_files/example_app1/tests/")
@@ -148,6 +154,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         os.removedirs("/tmp/project_nocapture/example_app/tests/")
         os.removedirs("/tmp/bad_project_nocapture/example_app/tests/")
         os.removedirs("/tmp/project_with_dots/example.app.something/tests/")
+        os.removedirs("/tmp/project_with_results_buffer/tests/")
 
     def test_find_vim_django_file(self):
         return_value = sut.find_path_to_file("/tmp/project_app_only/example_app1/tests", ".vim-django")
@@ -198,6 +205,12 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
     def test_get_env_name_returns_false_when_not_provided(self):
         app_name = sut.get_json_field_from_config_file("/tmp/project_app_only/example_app1/tests", "environment")
         self.assertEqual(False, app_name)
+
+    def test_create_results_buffer_returns_true_when_create_results_buffer_variable_defined_in_vim_django_file(self):
+        self.assertTrue(sut.create_results_buffer("/tmp/project_with_results_buffer/tests/"))
+
+    def test_create_results_buffer_returns_false_when_create_results_buffer_variable_not_defined_in_vim_django_file(self):
+        self.assertFalse(sut.create_results_buffer("/tmp/project_app_only/example_app1/tests"))
 
     def test_get_command_to_run_the_current_app_when_manage_py_found_and_app_name_provided_and_no_env_specified(self):
         current_dir = '/tmp/project_app_only/example_app1/tests/test_file.py'

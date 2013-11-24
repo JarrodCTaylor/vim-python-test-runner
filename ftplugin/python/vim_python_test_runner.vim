@@ -15,8 +15,7 @@ import os
 from sys import platform as _platform
 from vim_python_test_runner import *
 
-def get_proper_command(desired_command):
-    current_directory = os.sep.join([dir for dir in vim.current.buffer.name.split(os.sep) if dir])
+def get_proper_command(desired_command, current_directory):
     current_line_index = vim.current.window.cursor[0]
     FUNCTIONS = {
         "django_app": lambda: get_command_to_run_the_current_app(current_directory),
@@ -30,7 +29,7 @@ def get_proper_command(desired_command):
     }
     return FUNCTIONS[desired_command]()
 
-def check_for_errors(command_to_run):
+def no_errors(command_to_run):
     if ".vim-django does not exist" == command_to_run:
         print(".vim-django file does not exist or is improperly formated. ':help run-django-tests'")
         return False
@@ -43,15 +42,36 @@ def run_desired_command_for_os(command_to_run):
     if "nose" in vim.eval("a:command_to_run") or "nose" in command_to_run:
         vim.command(command_to_run)
     elif _platform == 'linux' or _platform == 'linux2':
-        vim.command(":!python {0}".format(command_to_run))
+        vim.command(":!python {0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
     elif _platform == 'darwin':
-        vim.command(":!sudo python {0}".format(command_to_run))
+        vim.command(":!sudo python {0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
+
+def create_new_buffer(contents):
+    delete_old_output_if_exists()
+    vim.command('rightbelow split test_results')
+    vim.command('normal! ggdG')
+    vim.command('setlocal filetype=text')
+    vim.command('setlocal buftype=nowrite')
+    vim.command('call append(0, {0})'.format(contents))
+
+def delete_old_output_if_exists():
+    if int(vim.eval('buflisted("test_results")')):
+        vim.command('bdelete test_results')
+
+def read_test_results_from_file():
+    results = []
+    with open("/tmp/test_results.txt", "r") as f:
+        [results.append(line.rstrip()) for line in f]
+        return results
 
 def main():
-    command_to_run = get_proper_command(vim.eval("a:command_to_run"))
-    proceede = check_for_errors(command_to_run)
-    if proceede:
+    current_directory = os.sep.join([dir for dir in vim.current.buffer.name.split(os.sep) if dir])
+    command_to_run = get_proper_command(vim.eval("a:command_to_run"), current_directory)
+    if no_errors(command_to_run):
         run_desired_command_for_os(command_to_run)
+        if create_results_buffer(current_directory):
+            results = read_test_results_from_file()
+            create_new_buffer(results)
 
 vim.command('wall')
 main()
