@@ -104,18 +104,19 @@ tests for.
 #### Optional fields
 
 Optional fields that can be set in the vim-django config file are as follows:
-- environment: If you have your project configured for different environments you
-               may specify which one to run tests for. Example `"environment": "NameOfEnv"`
-               If you don't know what it should be then you don't need to use it.
+- `environment`: If you have modifyed your manage.py file to accept an environment argument
+                 then you may use the environment flag to specify which one to run tests for.
+                 Example `"environment": "dev"` If you haven't modifyed your manage.py file
+                 then you don't need to use this.
 
-- failfast:  Enable the django-nose builtin failfast option by specifying
-             failfast to be true. Example `"failfast": true`
+- `failfast`:    Enable the django-nose builtin failfast option by specifying
+                 failfast to be true. Example `"failfast": true`
 
-- nocapture: Enable the django-nose builtin nocapture option by specifiying
-             nocapture to be true. Example `"nocapture": true`
+- `nocapture`:   Enable the django-nose builtin nocapture option by specifiying
+                 nocapture to be true. Example `"nocapture": true`
 
-- create_results_buffer: If set to true the test results will be displayed in a
-                         split buffer. Example `"create_results_buffer": true`
+- `create_results_buffer`: If set to true the test results will be displayed in a
+                           split buffer. Example `"create_results_buffer": true`
 
 #### vim-django config file example
 
