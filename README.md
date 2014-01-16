@@ -67,6 +67,13 @@ your vimrc:
     nnoremap<Leader>rr :RerunLastTests<CR>
 ```
 
+### Quickfix Results
+
+Your tests results will be available in the quickfix window after they finish
+running and you return to your Vim buffer. Open quickfix with `:copen` and
+you can jump to failing tests by placing your cursor on the desired test and
+pressing enter.
+
 ### NOTE to OS X users
 
 The django commands need to be ran from vim with sudo on OS X so the first
@@ -114,9 +121,6 @@ Optional fields that can be set in the vim-django config file are as follows:
 
 - `nocapture`:   Enable the django-nose builtin nocapture option by specifiying
                  nocapture to be true. Example `"nocapture": true`
-
-- `create_results_buffer`: If set to true the test results will be displayed in a
-                           split buffer. Example `"create_results_buffer": true`
 
 #### vim-django config file example
 

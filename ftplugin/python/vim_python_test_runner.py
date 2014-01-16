@@ -152,12 +152,6 @@ def get_current_method(current_line_index, current_buffer):
     return False
 
 
-def create_results_buffer(current_dir):
-    if get_json_field_from_config_file(current_dir, "create_results_buffer"):
-        return True
-    return False
-
-
 def get_json_field_from_config_file(current_dir, field_name):
     try:
         with open(find_path_to_file(current_dir, ".vim-django"), "r") as f:
