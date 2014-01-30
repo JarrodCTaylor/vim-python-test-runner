@@ -7,147 +7,88 @@ import vim_python_test_runner as sut
 class VimTestRunnerForDjangoTests(unittest.TestCase):
 
     def setUp(self):
-        os.makedirs("/tmp/project_app_only/example_app1/tests/")
-        os.makedirs("/tmp/project_app_name_and_env/example_app1/tests/")
-        os.makedirs("/tmp/bad_project_no_files/example_app1/tests/")
-        os.makedirs("/tmp/bad_project_no_config_file/example_app1/tests/")
-        os.makedirs("/tmp/bad_project_no_app/example_app1/tests/")
-        os.makedirs("/tmp/bad_project_no_path_to_tests/example_app1/tests/")
-        os.makedirs("/tmp/project_multiple_apps/example_app1/tests/")
-        os.makedirs("/tmp/bad_project_multiple_invalid_apps/example_app1/tests/")
-        os.makedirs("/tmp/project_nested_test_dirs/example_app1/tests/nested1/")
-        os.makedirs("/tmp/project_contains_app_name/app_name/tests/")
-        os.makedirs("/tmp/project_failfast/example_app/tests/")
-        os.makedirs("/tmp/bad_project_failfast/example_app/tests/")
-        os.makedirs("/tmp/project_nocapture/example_app/tests/")
-        os.makedirs("/tmp/bad_project_nocapture/example_app/tests/")
-        os.makedirs("/tmp/project_with_dots/example.app.something/tests/")
+        dirs_to_make = [
+            "/tmp/project_app_only/example_app1/tests/", "/tmp/project_app_name_and_env/example_app1/tests/",
+            "/tmp/bad_project_no_files/example_app1/tests/", "/tmp/bad_project_no_config_file/example_app1/tests/",
+            "/tmp/bad_project_no_app/example_app1/tests/", "/tmp/bad_project_no_path_to_tests/example_app1/tests/",
+            "/tmp/project_multiple_apps/example_app1/tests/", "/tmp/bad_project_multiple_invalid_apps/example_app1/tests/",
+            "/tmp/project_nested_test_dirs/example_app1/tests/nested1/", "/tmp/project_contains_app_name/app_name/tests/",
+            "/tmp/project_failfast/example_app/tests/", "/tmp/bad_project_failfast/example_app/tests/",
+            "/tmp/project_nocapture/example_app/tests/", "/tmp/bad_project_nocapture/example_app/tests/",
+            "/tmp/project_with_dots/example.app.something/tests/"
+        ]
 
-        with open("/tmp/project_app_only/.vim-django", "w") as f:
-            f.write('{"app_name": "example_app1"}')
-        with open("/tmp/project_app_only/manage.py", "w") as f:
-            f.write("#Place holder")
+        contents_to_write = [
+            ("/tmp/project_app_only/.vim-django", '{"app_name": "example_app1"}'),
+            ("/tmp/project_app_only/manage.py", "#Place holder"),
+            ("/tmp/project_app_name_and_env/.vim-django", '{"app_name": "example_app1", "environment": "test"}'),
+            ("/tmp/project_app_name_and_env/manage.py", "#Place holder"),
+            ("/tmp/bad_project_no_config_file/manage.py", "#Place holder"),
+            ("/tmp/bad_project_no_app/.vim-django", '{"bad_field": "example_app1"}'),
+            ("/tmp/bad_project_no_app/manage.py", "#Place holder"),
+            ("/tmp/bad_project_no_path_to_tests/.vim-django", '{"app_name": "example_app1"}'),
+            ("/tmp/bad_project_no_path_to_tests/manage.py", "#Place holder"),
+            ("/tmp/project_multiple_apps/.vim-django", '{"app_name": "other_app, example_app1, example_app2"}'),
+            ("/tmp/project_multiple_apps/manage.py", "#Place holder"),
+            ("/tmp/bad_project_multiple_invalid_apps/.vim-django", '{"app_name": "other_app1, other_app2, other_app3"}'),
+            ("/tmp/bad_project_multiple_invalid_apps/manage.py", "#Place holder"),
+            ("/tmp/project_nested_test_dirs/.vim-django", '{"app_name": "example_app1, example_app2"}'),
+            ("/tmp/project_nested_test_dirs/manage.py", "#Place holder"),
+            ("/tmp/project_contains_app_name/.vim-django", '{"app_name": "example_app1, app_name"}'),
+            ("/tmp/project_contains_app_name/manage.py", "#Place holder"),
+            ("/tmp/project_failfast/.vim-django", '{"app_name": "example_app", "failfast": true}'),
+            ("/tmp/project_failfast/manage.py", "#Place holder"),
+            ("/tmp/bad_project_failfast/.vim-django", '{"app_name": "example_app", "failfast": false}'),
+            ("/tmp/bad_project_failfast/manage.py", "#Place holder"),
+            ("/tmp/project_nocapture/.vim-django", '{"app_name": "example_app", "nocapture": true}'),
+            ("/tmp/project_nocapture/manage.py", "#Place holder"),
+            ("/tmp/bad_project_nocapture/.vim-django", '{"app_name": "example_app", "nocapture": false}'),
+            ("/tmp/bad_project_nocapture/manage.py", "#Place holder"),
+            ("/tmp/project_with_dots/.vim-django", '{"app_name": "example.app.something"}'),
+            ("/tmp/project_with_dots/manage.py", "#Place holder")
+        ]
 
-        with open("/tmp/project_app_name_and_env/.vim-django", "w") as f:
-            f.write('{"app_name": "example_app1", "environment": "test"}')
-        with open("/tmp/project_app_name_and_env/manage.py", "w") as f:
-            f.write("#Place holder")
+        for directory in dirs_to_make:
+            os.makedirs(directory)
 
-        with open("/tmp/bad_project_no_config_file/manage.py", "w") as f:
-            f.write("#Place holder")
-
-        with open("/tmp/bad_project_no_app/.vim-django", "w") as f:
-            f.write('{"bad_field": "example_app1"}')
-        with open("/tmp/bad_project_no_app/manage.py", "w") as f:
-            f.write("#Place holder")
-
-        with open("/tmp/bad_project_no_path_to_tests/.vim-django", "w") as f:
-            f.write('{"app_name": "example_app1"}')
-        with open("/tmp/bad_project_no_path_to_tests/manage.py", "w") as f:
-            f.write("#Place holder")
-
-        with open("/tmp/project_multiple_apps/.vim-django", "w") as f:
-            f.write('{"app_name": "other_app, example_app1, example_app2"}')
-        with open("/tmp/project_multiple_apps/manage.py", "w") as f:
-            f.write("#Place holder")
-
-        with open("/tmp/bad_project_multiple_invalid_apps/.vim-django", "w") as f:
-            f.write('{"app_name": "other_app1, other_app2, other_app3"}')
-        with open("/tmp/bad_project_multiple_invalid_apps/manage.py", "w") as f:
-            f.write("#Place holder")
-
-        with open("/tmp/project_nested_test_dirs/.vim-django", "w") as f:
-            f.write('{"app_name": "example_app1, example_app2"}')
-        with open("/tmp/project_nested_test_dirs/manage.py", "w") as f:
-            f.write("#Place holder")
-
-        with open("/tmp/project_contains_app_name/.vim-django", "w") as f:
-            f.write('{"app_name": "example_app1, app_name"}')
-        with open("/tmp/project_contains_app_name/manage.py", "w") as f:
-            f.write("#Place holder")
-
-        with open("/tmp/project_failfast/.vim-django", "w") as f:
-            f.write('{"app_name": "example_app", "failfast": true}')
-        with open("/tmp/project_failfast/manage.py", "w") as f:
-            f.write("#Place holder")
-
-        with open("/tmp/bad_project_failfast/.vim-django", "w") as f:
-            f.write('{"app_name": "example_app", "failfast": false}')
-        with open("/tmp/bad_project_failfast/manage.py", "w") as f:
-            f.write("#Place holder")
-
-        with open("/tmp/project_nocapture/.vim-django", "w") as f:
-            f.write('{"app_name": "example_app", "nocapture": true}')
-        with open("/tmp/project_nocapture/manage.py", "w") as f:
-            f.write("#Place holder")
-
-        with open("/tmp/bad_project_nocapture/.vim-django", "w") as f:
-            f.write('{"app_name": "example_app", "nocapture": false}')
-        with open("/tmp/bad_project_nocapture/manage.py", "w") as f:
-            f.write("#Place holder")
-
-        with open("/tmp/project_with_dots/.vim-django", "w") as f:
-            f.write('{"app_name": "example.app.something"}')
-        with open("/tmp/project_with_dots/manage.py", "w") as f:
-            f.write("#Place holder")
+        for needed_file in contents_to_write:
+            with open(needed_file[0], "w") as f:
+                f.write(needed_file[1])
 
     def tearDown(self):
-        os.remove("/tmp/project_app_only/manage.py")
-        os.remove("/tmp/project_app_only/.vim-django")
+        files_to_del = [
+            "/tmp/project_app_only/manage.py", "/tmp/project_app_only/.vim-django",
+            "/tmp/project_app_name_and_env/.vim-django", "/tmp/project_app_name_and_env/manage.py",
+            "/tmp/bad_project_no_config_file/manage.py", "/tmp/bad_project_no_app/.vim-django",
+            "/tmp/bad_project_no_app/manage.py", "/tmp/bad_project_no_path_to_tests/.vim-django",
+            "/tmp/bad_project_no_path_to_tests/manage.py", "/tmp/project_multiple_apps/.vim-django",
+            "/tmp/project_multiple_apps/manage.py", "/tmp/bad_project_multiple_invalid_apps/.vim-django",
+            "/tmp/bad_project_multiple_invalid_apps/manage.py", "/tmp/project_nested_test_dirs/.vim-django",
+            "/tmp/project_nested_test_dirs/manage.py", "/tmp/project_contains_app_name/.vim-django",
+            "/tmp/project_contains_app_name/manage.py", "/tmp/project_failfast/.vim-django",
+            "/tmp/project_failfast/manage.py", "/tmp/bad_project_failfast/.vim-django",
+            "/tmp/bad_project_failfast/manage.py", "/tmp/project_nocapture/.vim-django",
+            "/tmp/project_nocapture/manage.py", "/tmp/bad_project_nocapture/.vim-django",
+            "/tmp/bad_project_nocapture/manage.py", "/tmp/project_with_dots/.vim-django",
+            "/tmp/project_with_dots/manage.py"
+        ]
 
-        os.remove("/tmp/project_app_name_and_env/.vim-django")
-        os.remove("/tmp/project_app_name_and_env/manage.py")
+        dirs_to_del = [
+            "/tmp/project_app_only/example_app1/tests/", "/tmp/project_app_name_and_env/example_app1/tests/",
+            "/tmp/bad_project_no_files/example_app1/tests/", "/tmp/bad_project_no_config_file/example_app1/tests/",
+            "/tmp/bad_project_no_app/example_app1/tests/", "/tmp/bad_project_no_path_to_tests/example_app1/tests/",
+            "/tmp/project_multiple_apps/example_app1/tests/", "/tmp/bad_project_multiple_invalid_apps/example_app1/tests/",
+            "/tmp/project_nested_test_dirs/example_app1/tests/nested1/", "/tmp/project_contains_app_name/app_name/tests/",
+            "/tmp/project_failfast/example_app/tests/", "/tmp/bad_project_failfast/example_app/tests/",
+            "/tmp/project_nocapture/example_app/tests/", "/tmp/bad_project_nocapture/example_app/tests/",
+            "/tmp/project_with_dots/example.app.something/tests/"
+        ]
 
-        os.remove("/tmp/bad_project_no_config_file/manage.py")
+        for a_file in files_to_del:
+            os.remove(a_file)
 
-        os.remove("/tmp/bad_project_no_app/.vim-django")
-        os.remove("/tmp/bad_project_no_app/manage.py")
-
-        os.remove("/tmp/bad_project_no_path_to_tests/.vim-django")
-        os.remove("/tmp/bad_project_no_path_to_tests/manage.py")
-
-        os.remove("/tmp/project_multiple_apps/.vim-django")
-        os.remove("/tmp/project_multiple_apps/manage.py")
-
-        os.remove("/tmp/bad_project_multiple_invalid_apps/.vim-django")
-        os.remove("/tmp/bad_project_multiple_invalid_apps/manage.py")
-
-        os.remove("/tmp/project_nested_test_dirs/.vim-django")
-        os.remove("/tmp/project_nested_test_dirs/manage.py")
-
-        os.remove("/tmp/project_contains_app_name/.vim-django")
-        os.remove("/tmp/project_contains_app_name/manage.py")
-
-        os.remove("/tmp/project_failfast/.vim-django")
-        os.remove("/tmp/project_failfast/manage.py")
-
-        os.remove("/tmp/bad_project_failfast/.vim-django")
-        os.remove("/tmp/bad_project_failfast/manage.py")
-
-        os.remove("/tmp/project_nocapture/.vim-django")
-        os.remove("/tmp/project_nocapture/manage.py")
-
-        os.remove("/tmp/bad_project_nocapture/.vim-django")
-        os.remove("/tmp/bad_project_nocapture/manage.py")
-
-        os.remove("/tmp/project_with_dots/.vim-django")
-        os.remove("/tmp/project_with_dots/manage.py")
-
-        os.removedirs("/tmp/project_app_only/example_app1/tests/")
-        os.removedirs("/tmp/project_app_name_and_env/example_app1/tests/")
-        os.removedirs("/tmp/bad_project_no_files/example_app1/tests/")
-        os.removedirs("/tmp/bad_project_no_config_file/example_app1/tests/")
-        os.removedirs("/tmp/bad_project_no_app/example_app1/tests/")
-        os.removedirs("/tmp/bad_project_no_path_to_tests/example_app1/tests/")
-        os.removedirs("/tmp/project_multiple_apps/example_app1/tests/")
-        os.removedirs("/tmp/bad_project_multiple_invalid_apps/example_app1/tests/")
-        os.removedirs("/tmp/project_nested_test_dirs/example_app1/tests/nested1/")
-        os.removedirs("/tmp/project_contains_app_name/app_name/tests/")
-        os.removedirs("/tmp/project_failfast/example_app/tests/")
-        os.removedirs("/tmp/bad_project_failfast/example_app/tests/")
-        os.removedirs("/tmp/project_nocapture/example_app/tests/")
-        os.removedirs("/tmp/bad_project_nocapture/example_app/tests/")
-        os.removedirs("/tmp/project_with_dots/example.app.something/tests/")
+        for directory in dirs_to_del:
+            os.removedirs(directory)
 
     def test_find_vim_django_file(self):
         return_value = sut.find_path_to_file("/tmp/project_app_only/example_app1/tests", ".vim-django")
