@@ -8,6 +8,9 @@ between your vim session and the shell for longer periods of time. It will
 also run your regular python unit tests with nosetests as well when not
 working on a Django project.
 
+## Demo
+![django_test_run](https://f.cloud.github.com/assets/4416952/2181329/c3107922-974b-11e3-88a8-c40f27061658.gif)
+
 ## Installation
 
 Use your plugin manager of choice.
