@@ -18,8 +18,8 @@ Use your plugin manager of choice.
 - [Pathogen](https://github.com/tpope/vim-pathogen)
   - `git clone https://github.com/JarrodCTaylor/vim-python-test-runner ~/.vim/bundle/vim-python-test-runner`
 - [Vundle](https://github.com/gmarik/vundle)
-  - Add `Bundle 'https://github.com/JarrodCTaylor/vim-python-test-runner'` to .vimrc
-  - Run `:BundleInstall`
+  - Add `Plugin 'JarrodCTaylor/vim-python-test-runner'` to .vimrc
+  - Run `:PluginInstall`
 - [NeoBundle](https://github.com/Shougo/neobundle.vim)
   - Add `NeoBundle 'https://github.com/JarrodCTaylor/vim-python-test-runner'` to .vimrc
   - Run `:NeoBundleInstall`
