@@ -3,7 +3,7 @@ Allows you to run Django unit tests that require database interactions, with
 django-nose as well as unit tests outside of a Django project with nosetests.
 
 ===============================================================================
-CONTENTS                                                 *test-runner-contents*
+CONTENTS
 
 
     1. Intro .............................................. |test-runner-intro|
