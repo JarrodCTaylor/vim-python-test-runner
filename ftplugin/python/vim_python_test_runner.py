@@ -8,14 +8,12 @@ def get_command_to_run_the_current_app(current_dir):
     path_to_manage = find_path_to_file(current_dir, "manage.py")
     if not path_to_manage:
         return "Not Django"
-
     app_name = get_app_name(current_dir)
     env_name = get_json_field_from_config_file(current_dir, "environment")
     failfast = get_json_field_from_config_file(current_dir, "failfast")
     failfast = set_flag("failfast", failfast)
     nocapture = get_json_field_from_config_file(current_dir, "nocapture")
     nocapture = set_flag("nocapture", nocapture)
-
     if app_name and env_name:
         command = "{0} {1} test {2}{3}{4}".format(path_to_manage, env_name, failfast, nocapture, app_name)
         write_test_command_to_cache_file(command)
@@ -28,44 +26,37 @@ def get_command_to_run_the_current_app(current_dir):
         return ".vim-django does not exist"
 
 
+def command(command_to_run, cmd, path=True):
+    if "Not Django" in command_to_run:
+        return "Not Django"
+    elif ".vim-django does not exist" in command_to_run or not path:
+        return ".vim-django does not exist"
+    else:
+        command = cmd
+        write_test_command_to_cache_file(command)
+        return command
+
+
 def get_command_to_run_the_current_file(current_dir):
     command_to_current_app = get_command_to_run_the_current_app(current_dir)
     path_to_tests = get_dot_notation_path_to_test(current_dir)
     file_name = get_file_name(current_dir)
-    if "Not Django" in command_to_current_app:
-        return "Not Django"
-    elif ".vim-django does not exist" in command_to_current_app or not path_to_tests:
-        return ".vim-django does not exist"
-    else:
-        command = command_to_current_app + "." + path_to_tests + "." + file_name
-        write_test_command_to_cache_file(command)
-        return command
+    cmd = "{}.{}.{}".format(command_to_current_app, path_to_tests, file_name)
+    return command(command_to_current_app, cmd, path_to_tests)
 
 
 def get_command_to_run_the_current_class(current_dir, current_line, current_buffer):
     class_name = get_current_class(current_line, current_buffer)
     command_to_current_file = get_command_to_run_the_current_app(current_dir)
-    if "Not Django" in command_to_current_file:
-        return command_to_current_file
-    elif ".vim-django does not exist" in command_to_current_file:
-        return ".vim-django does not exist"
-    else:
-        command = get_command_to_run_the_current_file(current_dir) + ":" + class_name
-        write_test_command_to_cache_file(command)
-        return command
+    cmd = "{}:{}".format(get_command_to_run_the_current_file(current_dir), class_name)
+    return command(command_to_current_file, cmd)
 
 
 def get_command_to_run_the_current_method(current_dir, current_line, current_buffer):
     method_name = get_current_method(current_line, current_buffer)
     command_to_current_class = get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
-    if "Not Django" in command_to_current_class:
-        return command_to_current_class
-    elif ".vim-django does not exist" in command_to_current_class:
-        return ".vim-django does not exist"
-    else:
-        command = command_to_current_class + "." + method_name
-        write_test_command_to_cache_file(command)
-        return command
+    cmd = "{}.{}".format(command_to_current_class, method_name)
+    return command(command_to_current_class, cmd)
 
 
 def get_command_to_run_current_file_with_nosetests(path_to_current_file):
