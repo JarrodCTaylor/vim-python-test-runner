@@ -121,8 +121,8 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         should_return_dummy2 = 15
         should_return_dummy1b = 27
         current_buffer = self.build_buffer_helper()
-        self.assertEqual("dummy2", sut.get_current_method(should_return_dummy2, current_buffer))
-        self.assertEqual("dummy1b", sut.get_current_method(should_return_dummy1b, current_buffer))
+        self.assertEqual("dummy2", sut.get_current_method(should_return_dummy2, current_buffer)[0])
+        self.assertEqual("dummy1b", sut.get_current_method(should_return_dummy1b, current_buffer)[0])
 
     def test_get_current_method_returns_false_when_not_in_method_message(self):
         current_buffer = self.build_buffer_helper()

@@ -53,3 +53,11 @@ class Example3(object):
         print('This is a testCb')
         print('This is a testDb')
         print('This is a testEb')
+
+
+def example4():
+    print('This is a testI')
+    print('This is a testII')
+    print('This is a testIII')
+    print('This is a testIV')
+    print('This is a testV')

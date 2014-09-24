@@ -53,7 +53,7 @@ def get_command_to_run_the_current_class(current_dir, current_line, current_buff
 
 
 def get_command_to_run_the_current_method(current_dir, current_line, current_buffer):
-    method_name = get_current_method(current_line, current_buffer)
+    method_name, _ = get_current_method(current_line, current_buffer)
     command_to_current_class = get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
     cmd = "{}.{}".format(command_to_current_class, method_name)
     return command(command_to_current_class, cmd)
@@ -74,9 +74,13 @@ def get_command_to_run_current_class_with_nosetests(path_to_current_file, curren
 
 
 def get_command_to_run_current_method_with_nosetests(path_to_current_file, current_line, current_buffer):
-    run_class = get_command_to_run_current_class_with_nosetests(path_to_current_file, current_line, current_buffer)
-    current_method = get_current_method(current_line, current_buffer)
-    command = run_class + "." + current_method
+    current_method, in_class = get_current_method(current_line, current_buffer)
+    run_file = get_command_to_run_current_file_with_nosetests(path_to_current_file)
+    if in_class:
+        current_class = get_current_class(current_line, current_buffer)
+        command = "{}:{}.{}".format(run_file, current_class, current_method)
+    else:
+        command = "{}:{}".format(run_file, current_method)
     write_test_command_to_cache_file(command)
     return command
 
@@ -139,7 +143,8 @@ def get_current_method(current_line_index, current_buffer):
             return False
         if method_regex.search(current_buffer[line]) is not None:
             method_name = method_regex.search(current_buffer[line])
-            return method_name.group(1)
+            in_class = not re.match(r"^def.*", current_buffer[line])
+            return method_name.group(1), in_class
     return False
 
 
