@@ -145,18 +145,12 @@ def get_json_field_from_config_file(current_dir, field_name):
         return False
 
 
-def get_flag(current_dir, flag):
-    value = get_json_field_from_config_file(current_dir, flag)
-    if value:
-        return "--{0} ".format(flag)
-    else:
-        return ""
-
-
 def get_flags(current_dir):
-    failfast = get_flag(current_dir, "failfast")
-    nocapture = get_flag(current_dir, "nocapture")
-    return failfast + nocapture
+    formatted_flags = ""
+    user_flags = get_json_field_from_config_file(current_dir, "flags") or []
+    for flag in user_flags:
+        formatted_flags += "--{} ".format(flag)
+    return formatted_flags
 
 
 def get_env_name_if_exists(current_dir):

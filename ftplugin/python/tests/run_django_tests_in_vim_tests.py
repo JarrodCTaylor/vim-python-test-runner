@@ -13,8 +13,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
             "/tmp/bad_project_no_app/example_app1/tests/", "/tmp/bad_project_no_path_to_tests/example_app1/tests/",
             "/tmp/project_multiple_apps/example_app1/tests/", "/tmp/bad_project_multiple_invalid_apps/example_app1/tests/",
             "/tmp/project_nested_test_dirs/example_app1/tests/nested1/", "/tmp/project_contains_app_name/app_name/tests/",
-            "/tmp/project_failfast/example_app/tests/", "/tmp/bad_project_failfast/example_app/tests/",
-            "/tmp/project_nocapture/example_app/tests/", "/tmp/bad_project_nocapture/example_app/tests/",
+            "/tmp/project_failfast/example_app/tests/", "/tmp/project_nocapture/example_app/tests/",
             "/tmp/project_with_dots/example.app.something/tests/"
         ]
 
@@ -36,14 +35,10 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
             ("/tmp/project_nested_test_dirs/manage.py", "#Place holder"),
             ("/tmp/project_contains_app_name/.vim-django", '{"app_name": "example_app1, app_name"}'),
             ("/tmp/project_contains_app_name/manage.py", "#Place holder"),
-            ("/tmp/project_failfast/.vim-django", '{"app_name": "example_app", "failfast": true}'),
+            ("/tmp/project_failfast/.vim-django", '{"app_name": "example_app", "flags": ["failfast"]}'),
             ("/tmp/project_failfast/manage.py", "#Place holder"),
-            ("/tmp/bad_project_failfast/.vim-django", '{"app_name": "example_app", "failfast": false}'),
-            ("/tmp/bad_project_failfast/manage.py", "#Place holder"),
-            ("/tmp/project_nocapture/.vim-django", '{"app_name": "example_app", "nocapture": true}'),
+            ("/tmp/project_nocapture/.vim-django", '{"app_name": "example_app", "flags": ["nocapture"]}'),
             ("/tmp/project_nocapture/manage.py", "#Place holder"),
-            ("/tmp/bad_project_nocapture/.vim-django", '{"app_name": "example_app", "nocapture": false}'),
-            ("/tmp/bad_project_nocapture/manage.py", "#Place holder"),
             ("/tmp/project_with_dots/.vim-django", '{"app_name": "example.app.something"}'),
             ("/tmp/project_with_dots/manage.py", "#Place holder")
         ]
@@ -66,10 +61,8 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
             "/tmp/bad_project_multiple_invalid_apps/manage.py", "/tmp/project_nested_test_dirs/.vim-django",
             "/tmp/project_nested_test_dirs/manage.py", "/tmp/project_contains_app_name/.vim-django",
             "/tmp/project_contains_app_name/manage.py", "/tmp/project_failfast/.vim-django",
-            "/tmp/project_failfast/manage.py", "/tmp/bad_project_failfast/.vim-django",
-            "/tmp/bad_project_failfast/manage.py", "/tmp/project_nocapture/.vim-django",
-            "/tmp/project_nocapture/manage.py", "/tmp/bad_project_nocapture/.vim-django",
-            "/tmp/bad_project_nocapture/manage.py", "/tmp/project_with_dots/.vim-django",
+            "/tmp/project_failfast/manage.py", "/tmp/project_nocapture/.vim-django",
+            "/tmp/project_nocapture/manage.py", "/tmp/project_with_dots/.vim-django",
             "/tmp/project_with_dots/manage.py"
         ]
 
@@ -79,8 +72,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
             "/tmp/bad_project_no_app/example_app1/tests/", "/tmp/bad_project_no_path_to_tests/example_app1/tests/",
             "/tmp/project_multiple_apps/example_app1/tests/", "/tmp/bad_project_multiple_invalid_apps/example_app1/tests/",
             "/tmp/project_nested_test_dirs/example_app1/tests/nested1/", "/tmp/project_contains_app_name/app_name/tests/",
-            "/tmp/project_failfast/example_app/tests/", "/tmp/bad_project_failfast/example_app/tests/",
-            "/tmp/project_nocapture/example_app/tests/", "/tmp/bad_project_nocapture/example_app/tests/",
+            "/tmp/project_failfast/example_app/tests/", "/tmp/project_nocapture/example_app/tests/",
             "/tmp/project_with_dots/example.app.something/tests/"
         ]
 
@@ -376,20 +368,10 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         command_to_run = sut.get_command_to_run_the_current_app(current_dir)
         self.assertEqual("/tmp/project_failfast/manage.py test --failfast example_app", command_to_run)
 
-    def test_get_command_to_run_the_current_app_when_failfast_is_set_to_a_bad_value_in_config_file(self):
-        current_dir = '/tmp/bad_project_failfast/example_app/tests/test_file.py'
-        command_to_run = sut.get_command_to_run_the_current_app(current_dir)
-        self.assertEqual("/tmp/bad_project_failfast/manage.py test example_app", command_to_run)
-
     def test_get_command_to_run_the_current_app_when_nocapture_is_set_to_true_in_config_file(self):
         current_dir = '/tmp/project_nocapture/example_app/tests/test_file.py'
         command_to_run = sut.get_command_to_run_the_current_app(current_dir)
         self.assertEqual("/tmp/project_nocapture/manage.py test --nocapture example_app", command_to_run)
-
-    def test_get_command_to_run_the_current_app_when_nocapture_is_set_to_a_bad_value_in_config_file(self):
-        current_dir = '/tmp/bad_project_nocapture/example_app/tests/test_file.py'
-        command_to_run = sut.get_command_to_run_the_current_app(current_dir)
-        self.assertEqual("/tmp/bad_project_nocapture/manage.py test example_app", command_to_run)
 
     def test_get_command_to_run_current_app_writes_command_to_cache_file_when_successfully_called(self):
         current_dir = '/tmp/project_app_only/example_app1/tests/test_file.py'
