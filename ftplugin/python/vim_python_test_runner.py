@@ -9,21 +9,13 @@ def get_command_to_run_the_current_app(current_dir):
     if not path_to_manage:
         return "Not Django"
     app_name = get_app_name(current_dir)
-    env_name = get_json_field_from_config_file(current_dir, "environment")
-    failfast = get_json_field_from_config_file(current_dir, "failfast")
-    failfast = set_flag("failfast", failfast)
-    nocapture = get_json_field_from_config_file(current_dir, "nocapture")
-    nocapture = set_flag("nocapture", nocapture)
-    if app_name and env_name:
-        command = "{0} {1} test {2}{3}{4}".format(path_to_manage, env_name, failfast, nocapture, app_name)
-        write_test_command_to_cache_file(command)
-        return (command)
-    elif app_name:
-        command = "{0} test {1}{2}{3}".format(path_to_manage, failfast, nocapture, app_name)
-        write_test_command_to_cache_file(command)
-        return (command)
-    else:
+    if not app_name:
         return ".vim-django does not exist"
+    env_name = get_env_name_if_exists(current_dir)
+    flags = get_flags(current_dir)
+    command = "{0}{1}test {2}{3}".format(path_to_manage, env_name, flags, app_name)
+    write_test_command_to_cache_file(command)
+    return (command)
 
 
 def command(command_to_run, cmd, path=True):
@@ -153,8 +145,22 @@ def get_json_field_from_config_file(current_dir, field_name):
         return False
 
 
-def set_flag(flag, value):
+def get_flag(current_dir, flag):
+    value = get_json_field_from_config_file(current_dir, flag)
     if value:
         return "--{0} ".format(flag)
     else:
         return ""
+
+
+def get_flags(current_dir):
+    failfast = get_flag(current_dir, "failfast")
+    nocapture = get_flag(current_dir, "nocapture")
+    return failfast + nocapture
+
+
+def get_env_name_if_exists(current_dir):
+    env_name = get_json_field_from_config_file(current_dir, "environment")
+    if env_name:
+        return " {} ".format(env_name)
+    return " "
