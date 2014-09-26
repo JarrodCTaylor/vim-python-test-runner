@@ -15,12 +15,8 @@ class NoVimDjango(Exception):
 
 
 def get_command_to_run_the_current_app(current_dir):
-    path_to_manage = find_path_to_file(current_dir, "manage.py")
-    if not path_to_manage:
-        raise NotDjango
+    path_to_manage = find_path_to_file(current_dir, "manage.py", NotDjango)
     app_name = get_app_name(current_dir)
-    if not app_name:
-        raise NoVimDjango
     env_name = get_env_name_if_exists(current_dir)
     flags = get_flags(current_dir)
     command = "{0}{1}test {2}{3}".format(path_to_manage, env_name, flags, app_name)
@@ -38,14 +34,14 @@ def get_command_to_run_the_current_file(current_dir):
 
 
 def get_command_to_run_the_current_class(current_dir, current_line, current_buffer):
-    class_name = get_current_class(current_line, current_buffer)
+    class_name = get_current_method_and_class(current_line, current_buffer)[0]
     cmd = "{}:{}".format(get_command_to_run_the_current_file(current_dir), class_name)
     write_test_command_to_cache_file(cmd)
     return cmd
 
 
 def get_command_to_run_the_current_method(current_dir, current_line, current_buffer):
-    method_name = get_current_method(current_line, current_buffer)
+    method_name = get_current_method_and_class(current_line, current_buffer)[1]
     command_to_current_class = get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
     cmd = "{}.{}".format(command_to_current_class, method_name)
     write_test_command_to_cache_file(cmd)
@@ -60,7 +56,7 @@ def get_command_to_run_current_file_with_nosetests(path_to_current_file):
 
 def get_command_to_run_current_class_with_nosetests(path_to_current_file, current_line, current_buffer):
     run_file = get_command_to_run_current_file_with_nosetests(path_to_current_file)
-    current_class = get_current_class(current_line, current_buffer)
+    current_class = get_current_method_and_class(current_line, current_buffer)[0]
     command = run_file + ":" + current_class
     write_test_command_to_cache_file(command)
     return command
@@ -68,7 +64,7 @@ def get_command_to_run_current_class_with_nosetests(path_to_current_file, curren
 
 def get_command_to_run_current_method_with_nosetests(path_to_current_file, current_line, current_buffer):
     run_class = get_command_to_run_current_class_with_nosetests(path_to_current_file, current_line, current_buffer)
-    current_method = get_current_method(current_line, current_buffer)
+    current_method = get_current_method_and_class(current_line, current_buffer)[1]
     command = run_class + "." + current_method
     write_test_command_to_cache_file(command)
     return command
@@ -84,13 +80,13 @@ def write_test_command_to_cache_file(command):
         f.write(command)
 
 
-def find_path_to_file(current_dir, file_to_look_for):
+def find_path_to_file(current_dir, file_to_look_for, raise_exception=False):
     dir_list = [directory for directory in current_dir.split(os.path.sep) if directory]
     for x in range(len(dir_list) - 1, -1, -1):
         path_to_check = os.path.sep + os.path.sep.join(dir_list[:x])
         if file_to_look_for in os.listdir(path_to_check):
             return path_to_check + os.sep + file_to_look_for
-    return False
+    raise raise_exception
 
 
 def get_app_name(current_dir):
@@ -98,8 +94,7 @@ def get_app_name(current_dir):
     try:
         return [app.lstrip() for app in apps.split(",") if app.lstrip() in current_dir][0]
     except:
-        return False
-    return False
+        raise NoVimDjango
 
 
 def get_dot_notation_path_to_test(current_dir):
@@ -115,25 +110,17 @@ def get_file_name(current_dir):
     return path_parts[-1].split(".")[0]
 
 
-def get_current_class(current_line_index, current_buffer):
-    class_regex = re.compile(r"^class (?P<class_name>.+)\(")
+def get_current_method_and_class(current_line_index, current_buffer):
+    class_regex, class_name = re.compile(r"^class (?P<class_name>.+)\("), False
+    method_regex, method_name = re.compile(r"def (?P<method_name>.+)\("), False
     for line in xrange(current_line_index - 1, -1, -1):
-        if class_regex.search(current_buffer[line]) is not None:
+        if class_regex.search(current_buffer[line]) is not None and not class_name:
             class_name = class_regex.search(current_buffer[line])
-            return class_name.group(1)
-    return False
-
-
-def get_current_method(current_line_index, current_buffer):
-    class_regex = re.compile(r"^class (?P<class_name>.+)\(")
-    method_regex = re.compile(r"def (?P<method_name>.+)\(")
-    for line in xrange(current_line_index - 1, -1, -1):
-        if class_regex.search(current_buffer[line]) is not None:
-            return False
-        if method_regex.search(current_buffer[line]) is not None:
+            class_name = class_name.group(1)
+        if method_regex.search(current_buffer[line]) is not None and not method_name and not class_name:
             method_name = method_regex.search(current_buffer[line])
-            return method_name.group(1)
-    return False
+            method_name = method_name.group(1)
+    return (class_name, method_name)
 
 
 def get_json_field_from_config_file(current_dir, field_name):

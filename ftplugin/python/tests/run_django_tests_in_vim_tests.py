@@ -87,38 +87,38 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         self.assertEqual(return_value, "/tmp/project_app_only/.vim-django")
 
     def test_can_not_find_vim_django_file(self):
-        return_value = sut.find_path_to_file("/tmp/bad_project_no_files/example_app1/tests", ".vim-django")
-        self.assertEqual(return_value, False)
+        with self.assertRaises(sut.NoVimDjango):
+            sut.find_path_to_file("/tmp/bad_project_no_files/example_app1/tests", ".vim-django", sut.NoVimDjango)
 
     def test_find_manage_py(self):
         return_value = sut.find_path_to_file("/tmp/project_app_only/example_app1/tests", "manage.py")
         self.assertEqual(return_value, "/tmp/project_app_only/manage.py")
 
     def test_can_not_find_manage_py(self):
-        return_value = sut.find_path_to_file("/tmp/bad_project_no_files/example_app1/tests", "manage.py")
-        self.assertEqual(return_value, False)
+        with self.assertRaises(sut.NotDjango):
+            sut.find_path_to_file("/tmp/bad_project_no_files/example_app1/tests", "manage.py", sut.NotDjango)
 
     def test_get_valid_class_name(self):
         current_line1 = 17
         current_line2 = 24
         current_buffer = self.build_buffer_helper()
-        self.assertEqual("Example1", sut.get_current_class(current_line1, current_buffer))
-        self.assertEqual("Example2", sut.get_current_class(current_line2, current_buffer))
+        self.assertEqual("Example1", sut.get_current_method_and_class(current_line1, current_buffer)[0])
+        self.assertEqual("Example2", sut.get_current_method_and_class(current_line2, current_buffer)[0])
 
-    def test_get_current_class_returns_false_when_not_in_class(self):
+    def test_get_current_method_and_class_returns_false_for_class_when_not_in_class(self):
         current_buffer = self.build_buffer_helper()
-        self.assertEqual(False, sut.get_current_class(2, current_buffer))
+        self.assertEqual(False, sut.get_current_method_and_class(2, current_buffer)[0])
 
     def test_get_valid_method_name(self):
         should_return_dummy2 = 15
         should_return_dummy1b = 27
         current_buffer = self.build_buffer_helper()
-        self.assertEqual("dummy2", sut.get_current_method(should_return_dummy2, current_buffer))
-        self.assertEqual("dummy1b", sut.get_current_method(should_return_dummy1b, current_buffer))
+        self.assertEqual("dummy2", sut.get_current_method_and_class(should_return_dummy2, current_buffer)[1])
+        self.assertEqual("dummy1b", sut.get_current_method_and_class(should_return_dummy1b, current_buffer)[1])
 
-    def test_get_current_method_returns_false_when_not_in_method_message(self):
+    def test_get_current_method_and_class_returns_false_when_not_in_method(self):
         current_buffer = self.build_buffer_helper()
-        self.assertEqual(False, sut.get_current_method(25, current_buffer))
+        self.assertEqual(False, sut.get_current_method_and_class(25, current_buffer)[1])
 
     def test_get_app_name(self):
         app_name = sut.get_json_field_from_config_file("/tmp/project_app_only/example_app1/tests", "app_name")
