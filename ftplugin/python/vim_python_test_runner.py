@@ -70,6 +70,14 @@ def get_command_to_run_current_method_with_nosetests(path_to_current_file, curre
     return command
 
 
+def get_command_to_run_current_base_method_with_nosetests(path_to_current_file, current_line, current_buffer):
+    run_file = get_command_to_run_current_file_with_nosetests(path_to_current_file)
+    current_method = get_current_method_and_class(current_line, current_buffer)[1]
+    command = run_file + ":" + current_method
+    write_test_command_to_cache_file(command)
+    return command
+
+
 def get_command_to_rerun_last_tests():
     with open("/tmp/vim_python_test_runner_cache", "r") as f:
         return f.read()

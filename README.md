@@ -39,18 +39,17 @@ pip installed in order for the plugin to function properly.
 
 ## Usage
 
-The plugin provides eight commands:
+The plugin provides nine commands:
 
-```
-    DjangoTestApp
-    DjangoTestFile
-    DjangoTestClass
-    DjangoTestMethod
-    NosetestFile
-    NosetestClass
-    NosetestMethod
-    RerunLastTests
-```
+- `DjangoTestApp`: Run all tests for the current app
+- `DjangoTestFile`: Run all tests in the current file
+- `DjangoTestClass`: Run all tests in the current class
+- `DjangoTestMethod`: Run test for the current method
+- `NosetestFile`: Run all tests for the current file
+- `NosetestClass`: Run all tests in the current class
+- `NosetestMethod`: Run the current test method (inside of a class)
+- `NosetestBaseMethod`: Run the current test method (outside of a class)
+- `RerunLastTests`: Rerun the last tests
 
 All arguments can be tab-completed. Ensure that your cursor is within a
 file, class or method as appropriate for the command being called.
@@ -67,6 +66,7 @@ your vimrc:
     nnoremap<Leader>nf :NosetestFile<CR>
     nnoremap<Leader>nc :NosetestClass<CR>
     nnoremap<Leader>nm :NosetestMethod<CR>
+    nnoremap<Leader>nb :NosetestBaseMethod<CR>
     nnoremap<Leader>rr :RerunLastTests<CR>
 ```
 
@@ -114,16 +114,14 @@ tests for.
 #### Optional fields
 
 Optional fields that can be set in the vim-django config file are as follows:
-- `environment`: If you have modifyed your manage.py file to accept an environment argument
+- `environment`: If you have modified your manage.py file to accept an environment argument
                  then you may use the environment flag to specify which one to run tests for.
-                 Example `"environment": "dev"` If you haven't modifyed your manage.py file
+                 Example `"environment": "dev"` If you haven't modified your manage.py file
                  then you don't need to use this.
 
-- `failfast`:    Enable the django-nose builtin failfast option by specifying
-                 failfast to be true. Example `"failfast": true`
+- `flags`:       An array of flags that you would like passed to the test runner
+                 See example config file below for usage.
 
-- `nocapture`:   Enable the django-nose builtin nocapture option by specifiying
-                 nocapture to be true. Example `"nocapture": true`
 
 #### vim-django config file example
 
@@ -134,7 +132,7 @@ the fail fast option.
 ```
 {"app_name": "app1, app2",
  "environment": "OptionalNameOfEnv",
- "failfast": true}
+ "flags": ["failfast"]}
 ```
 *NOTE* be sure to use double quotes in the config file as it is parsed as json
 

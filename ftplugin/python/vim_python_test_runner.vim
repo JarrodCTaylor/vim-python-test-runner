@@ -28,6 +28,7 @@ def get_proper_command(desired_command, current_directory):
         "nose_file": lambda: get_command_to_run_current_file_with_nosetests(vim.current.buffer.name),
         "nose_class": lambda: get_command_to_run_current_class_with_nosetests(vim.current.buffer.name, current_line_index, vim.current.buffer),
         "nose_method": lambda: get_command_to_run_current_method_with_nosetests(vim.current.buffer.name, current_line_index, vim.current.buffer),
+        "nose_base_method": lambda: get_command_to_run_current_base_method_with_nosetests(vim.current.buffer.name, current_line_index, vim.current.buffer),
         "rerun": lambda: get_command_to_rerun_last_tests()
     }
     return FUNCTIONS[desired_command]()
@@ -61,4 +62,5 @@ command! DjangoTestMethod call RunDesiredTests("django_method")
 command! NosetestFile call RunDesiredTests("nose_file")
 command! NosetestClass call RunDesiredTests("nose_class")
 command! NosetestMethod call RunDesiredTests("nose_method")
+command! NosetestBaseMethod call RunDesiredTests("nose_base_method")
 command! RerunLastTests call RunDesiredTests("rerun")

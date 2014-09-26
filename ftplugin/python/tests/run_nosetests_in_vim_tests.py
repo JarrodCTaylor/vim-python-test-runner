@@ -46,8 +46,15 @@ class RunNosetestsInVimTests(unittest.TestCase):
         last_command = sut.get_command_to_rerun_last_tests()
         self.assertEqual(command_to_run, last_command)
 
-    def build_buffer_helper(self):
-        with open("dummy_test_file.py", "r") as f:
+    def test_create_command_to_run_current_method_with_nosetests_when_not_in_a_class(self):
+        path_to_current_file = "/tmp/project/tests/aTestFile.py"
+        current_line = 5
+        current_buffer = self.build_buffer_helper("classless_dummy_file.py")
+        command_to_run = sut.get_command_to_run_current_base_method_with_nosetests(path_to_current_file, current_line, current_buffer)
+        self.assertEqual(":!nosetests /tmp/project/tests/aTestFile.py:dummy_base_method1", command_to_run)
+
+    def build_buffer_helper(self, dummy_file="dummy_test_file.py"):
+        with open(dummy_file, "r") as f:
             current_buffer = []
             for line in f.readlines():
                 current_buffer.append(line)
