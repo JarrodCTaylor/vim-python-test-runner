@@ -4,13 +4,23 @@ import re
 import json
 
 
+class NotDjango(Exception):
+    def __str__(self):
+                return "Are you sure this is a Django project?"
+
+
+class NoVimDjango(Exception):
+    def __str__(self):
+                return ".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner.txt'"
+
+
 def get_command_to_run_the_current_app(current_dir):
     path_to_manage = find_path_to_file(current_dir, "manage.py")
     if not path_to_manage:
-        return "Not Django"
+        raise NotDjango
     app_name = get_app_name(current_dir)
     if not app_name:
-        return ".vim-django does not exist"
+        raise NoVimDjango
     env_name = get_env_name_if_exists(current_dir)
     flags = get_flags(current_dir)
     command = "{0}{1}test {2}{3}".format(path_to_manage, env_name, flags, app_name)
@@ -18,37 +28,28 @@ def get_command_to_run_the_current_app(current_dir):
     return (command)
 
 
-def command(command_to_run, cmd, path=True):
-    if "Not Django" in command_to_run:
-        return "Not Django"
-    elif ".vim-django does not exist" in command_to_run or not path:
-        return ".vim-django does not exist"
-    else:
-        command = cmd
-        write_test_command_to_cache_file(command)
-        return command
-
-
 def get_command_to_run_the_current_file(current_dir):
     command_to_current_app = get_command_to_run_the_current_app(current_dir)
     path_to_tests = get_dot_notation_path_to_test(current_dir)
     file_name = get_file_name(current_dir)
     cmd = "{}.{}.{}".format(command_to_current_app, path_to_tests, file_name)
-    return command(command_to_current_app, cmd, path_to_tests)
+    write_test_command_to_cache_file(cmd)
+    return cmd
 
 
 def get_command_to_run_the_current_class(current_dir, current_line, current_buffer):
     class_name = get_current_class(current_line, current_buffer)
-    command_to_current_file = get_command_to_run_the_current_app(current_dir)
     cmd = "{}:{}".format(get_command_to_run_the_current_file(current_dir), class_name)
-    return command(command_to_current_file, cmd)
+    write_test_command_to_cache_file(cmd)
+    return cmd
 
 
 def get_command_to_run_the_current_method(current_dir, current_line, current_buffer):
     method_name = get_current_method(current_line, current_buffer)
     command_to_current_class = get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
     cmd = "{}.{}".format(command_to_current_class, method_name)
-    return command(command_to_current_class, cmd)
+    write_test_command_to_cache_file(cmd)
+    return cmd
 
 
 def get_command_to_run_current_file_with_nosetests(path_to_current_file):

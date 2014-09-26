@@ -32,15 +32,6 @@ def get_proper_command(desired_command, current_directory):
     }
     return FUNCTIONS[desired_command]()
 
-def no_errors(command_to_run):
-    if ".vim-django does not exist" == command_to_run:
-        print(".vim-django file does not exist or is improperly formated. ':help run-django-tests'")
-        return False
-    elif "Not Django" == command_to_run:
-        print("Are you sure this is a Django project?")
-        return False
-    return True
-
 def run_desired_command_for_os(command_to_run):
     if "nose" in vim.eval("a:command_to_run") or "nose" in command_to_run:
         vim.command("{0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
@@ -51,10 +42,12 @@ def run_desired_command_for_os(command_to_run):
 
 def main():
     current_directory = os.sep.join([dir for dir in vim.current.buffer.name.split(os.sep) if dir])
-    command_to_run = get_proper_command(vim.eval("a:command_to_run"), current_directory)
-    if no_errors(command_to_run):
-        run_desired_command_for_os(command_to_run)
-        vim.command('silent make! | cw')
+    try:
+        command_to_run = get_proper_command(vim.eval("a:command_to_run"), current_directory)
+    except Exception as e:
+        print(e)
+    run_desired_command_for_os(command_to_run)
+    vim.command('silent make! | cw')
 
 vim.command('wall')
 main()
