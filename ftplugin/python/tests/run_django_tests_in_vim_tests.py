@@ -1,4 +1,6 @@
 import os
+import glob
+import shutil
 import unittest
 
 import vim_python_test_runner as sut
@@ -51,36 +53,9 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
                 f.write(needed_file[1])
 
     def tearDown(self):
-        files_to_del = [
-            "/tmp/project_app_only/manage.py", "/tmp/project_app_only/.vim-django",
-            "/tmp/project_app_name_and_env/.vim-django", "/tmp/project_app_name_and_env/manage.py",
-            "/tmp/bad_project_no_config_file/manage.py", "/tmp/bad_project_no_app/.vim-django",
-            "/tmp/bad_project_no_app/manage.py", "/tmp/bad_project_no_path_to_tests/.vim-django",
-            "/tmp/bad_project_no_path_to_tests/manage.py", "/tmp/project_multiple_apps/.vim-django",
-            "/tmp/project_multiple_apps/manage.py", "/tmp/bad_project_multiple_invalid_apps/.vim-django",
-            "/tmp/bad_project_multiple_invalid_apps/manage.py", "/tmp/project_nested_test_dirs/.vim-django",
-            "/tmp/project_nested_test_dirs/manage.py", "/tmp/project_contains_app_name/.vim-django",
-            "/tmp/project_contains_app_name/manage.py", "/tmp/project_failfast/.vim-django",
-            "/tmp/project_failfast/manage.py", "/tmp/project_nocapture/.vim-django",
-            "/tmp/project_nocapture/manage.py", "/tmp/project_with_dots/.vim-django",
-            "/tmp/project_with_dots/manage.py"
-        ]
 
-        dirs_to_del = [
-            "/tmp/project_app_only/example_app1/tests/", "/tmp/project_app_name_and_env/example_app1/tests/",
-            "/tmp/bad_project_no_files/example_app1/tests/", "/tmp/bad_project_no_config_file/example_app1/tests/",
-            "/tmp/bad_project_no_app/example_app1/tests/", "/tmp/bad_project_no_path_to_tests/example_app1/tests/",
-            "/tmp/project_multiple_apps/example_app1/tests/", "/tmp/bad_project_multiple_invalid_apps/example_app1/tests/",
-            "/tmp/project_nested_test_dirs/example_app1/tests/nested1/", "/tmp/project_contains_app_name/app_name/tests/",
-            "/tmp/project_failfast/example_app/tests/", "/tmp/project_nocapture/example_app/tests/",
-            "/tmp/project_with_dots/example.app.something/tests/"
-        ]
-
-        for a_file in files_to_del:
-            os.remove(a_file)
-
-        for directory in dirs_to_del:
-            os.removedirs(directory)
+        for a_dir in glob.glob("/tmp/*project_*"):
+            shutil.rmtree(a_dir)
 
     def test_find_vim_django_file(self):
         return_value = sut.find_path_to_file("/tmp/project_app_only/example_app1/tests", ".vim-django")
