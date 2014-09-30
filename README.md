@@ -136,6 +136,33 @@ the fail fast option.
 ```
 *NOTE* be sure to use double quotes in the config file as it is parsed as json
 
+#### vim-django config file example for namespace packages
+
+Namespace packages are supported, but require slightly different placement of
+the `.vim-django` config file. Rather than placing it in the project root place
+it in the lowest level package. For example, given a namespace package called
+`organization.department.team` the `.vim-django` file would be inside of the
+`team` directory.
+```
+── Project Root
+   ├── manage.py
+   └── organization
+       └── department
+           └── team
+               └── .vim-django
+               └── testsa1.py
+               └── tests
+                   ├── testsb1.py
+                   └── testsb2.py
+```
+
+The `.vim-django` file will contain only the top level package name, in this case
+`organization`, for example:
+
+```
+{"app_name": "organization"}
+```
+
 ### Outside of Django
 
 Nothing other than nose is required to use this plugin for tests that are
