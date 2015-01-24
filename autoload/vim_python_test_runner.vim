@@ -12,7 +12,7 @@ python import sys
 python import vim
 python sys.path.append(vim.eval('expand("<sfile>:h")'))
 
-function! RunDesiredTests(command_to_run)
+function! vim_python_test_runner#RunDesiredTests(command_to_run)
 python << endPython
 import os
 from sys import platform as _platform
@@ -55,12 +55,3 @@ main()
 endPython
 endfunction
 
-command! DjangoTestApp call RunDesiredTests("django_app")
-command! DjangoTestFile call RunDesiredTests("django_file")
-command! DjangoTestClass call RunDesiredTests("django_class")
-command! DjangoTestMethod call RunDesiredTests("django_method")
-command! NosetestFile call RunDesiredTests("nose_file")
-command! NosetestClass call RunDesiredTests("nose_class")
-command! NosetestMethod call RunDesiredTests("nose_method")
-command! NosetestBaseMethod call RunDesiredTests("nose_base_method")
-command! RerunLastTests call RunDesiredTests("rerun")

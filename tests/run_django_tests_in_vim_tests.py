@@ -2,8 +2,9 @@ import os
 import glob
 import shutil
 import unittest
+from inspect import getfile, currentframe
 
-import vim_python_test_runner as sut
+import autoload.vim_python_test_runner as sut
 
 
 class VimTestRunnerForDjangoTests(unittest.TestCase):
@@ -384,7 +385,8 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         self.assertEqual(command_returned, expected_return_value)
 
     def build_buffer_helper(self):
-        with open("dummy_test_file.py", "r") as f:
+        current_dir = os.path.dirname(os.path.abspath(getfile(currentframe())))
+        with open("{}/dummy_test_file.py".format(current_dir), "r") as f:
             current_buffer = []
             for line in f.readlines():
                 current_buffer.append(line)

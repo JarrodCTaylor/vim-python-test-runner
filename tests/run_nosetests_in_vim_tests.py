@@ -1,6 +1,8 @@
+import os
 import unittest
+from inspect import getfile, currentframe
 
-import vim_python_test_runner as sut
+import autoload.vim_python_test_runner as sut
 
 
 class RunNosetestsInVimTests(unittest.TestCase):
@@ -54,7 +56,8 @@ class RunNosetestsInVimTests(unittest.TestCase):
         self.assertEqual(":!nosetests /tmp/project/tests/aTestFile.py:dummy_base_method1", command_to_run)
 
     def build_buffer_helper(self, dummy_file="dummy_test_file.py"):
-        with open(dummy_file, "r") as f:
+        current_dir = os.path.dirname(os.path.abspath(getfile(currentframe())))
+        with open("{}/{}".format(current_dir, dummy_file), "r") as f:
             current_buffer = []
             for line in f.readlines():
                 current_buffer.append(line)
