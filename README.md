@@ -59,15 +59,15 @@ if you wanted leader mappings you could set something like the following in
 your vimrc:
 
 ```
-    nnoremap<Leader>da :DjangoTestApp<CR>
-    nnoremap<Leader>df :DjangoTestFile<CR>
-    nnoremap<Leader>dc :DjangoTestClass<CR>
-    nnoremap<Leader>dm :DjangoTestMethod<CR>
-    nnoremap<Leader>nf :NosetestFile<CR>
-    nnoremap<Leader>nc :NosetestClass<CR>
-    nnoremap<Leader>nm :NosetestMethod<CR>
-    nnoremap<Leader>nb :NosetestBaseMethod<CR>
-    nnoremap<Leader>rr :RerunLastTests<CR>
+    nnoremap <Leader>da :DjangoTestApp<CR>
+    nnoremap <Leader>df :DjangoTestFile<CR>
+    nnoremap <Leader>dc :DjangoTestClass<CR>
+    nnoremap <Leader>dm :DjangoTestMethod<CR>
+    nnoremap <Leader>nf :NosetestFile<CR>
+    nnoremap <Leader>nc :NosetestClass<CR>
+    nnoremap <Leader>nm :NosetestMethod<CR>
+    nnoremap <Leader>nb :NosetestBaseMethod<CR>
+    nnoremap <Leader>rr :RerunLastTests<CR>
 ```
 
 ### Quickfix Results
