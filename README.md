@@ -77,13 +77,6 @@ running and you return to your Vim buffer. Open quickfix with `:copen` and
 you can jump to failing tests by placing your cursor on the desired test and
 pressing enter.
 
-### NOTE to OS X users
-
-The django commands need to be ran from vim with sudo on OS X so the first
-time you run one of the Django test commands you will be asked by the shell
-for your password. You should only have to enter it once then you will be able
-to run subsequent commands in that buffer without reentering your password.
-
 ### Required Configuration File for Django Tests
 
 To make use of the plugin for Django projects you will need to create a small
