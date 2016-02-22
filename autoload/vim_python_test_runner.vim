@@ -15,7 +15,6 @@ python sys.path.append(vim.eval('expand("<sfile>:h")'))
 function! vim_python_test_runner#RunDesiredTests(command_to_run)
 python << endPython
 import os
-from sys import platform as _platform
 from vim_python_test_runner import *
 
 def get_proper_command(desired_command, current_directory):
@@ -36,10 +35,7 @@ def get_proper_command(desired_command, current_directory):
 def run_desired_command_for_os(command_to_run):
     if "nose" in vim.eval("a:command_to_run") or "nose" in command_to_run:
         vim.command("{0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
-    elif _platform == 'linux' or _platform == 'linux2':
-        vim.command(":!python {0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
-    elif _platform == 'darwin':
-        vim.command(":!python {0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
+    vim.command(":!python {0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
 
 def main():
     current_directory = os.sep.join([dir for dir in vim.current.buffer.name.split(os.sep) if dir])
