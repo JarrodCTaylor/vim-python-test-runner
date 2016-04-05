@@ -5,10 +5,10 @@ class Example1(object):
 
     def dummy1(self):
         print('This is a test1')
-        strange.object.class()
+        print('Ramdom use of the word class')
         print('This is a test2')
         print('This is a test3')
-        some_kind_of_function_class ("things")
+        some_kind_of_function_class("things")
         print('This is a test4')
         print('This is a test5')
 
