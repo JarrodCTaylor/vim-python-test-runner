@@ -34,8 +34,10 @@ def get_proper_command(desired_command, current_directory):
 
 def run_desired_command_for_os(command_to_run):
     if "nose" in vim.eval("a:command_to_run") or "nose" in command_to_run:
+        # Run nosetests for Python.
         vim.command("{0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
     else:
+        # Run manage.py test for Django.
         vim.command(":!python {0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
 
 def main():
