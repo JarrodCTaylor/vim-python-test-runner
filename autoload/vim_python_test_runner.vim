@@ -33,6 +33,9 @@ def get_proper_command(desired_command, current_directory):
     return FUNCTIONS[desired_command]()
 
 def run_desired_command_for_os(command_to_run):
+    print ('\t$$$$')
+    print (command_to_run)
+    print ('\t$$$$')
     if "nose" in vim.eval("a:command_to_run") or "nose" in command_to_run:
         vim.command("{0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
     vim.command(":!python {0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
