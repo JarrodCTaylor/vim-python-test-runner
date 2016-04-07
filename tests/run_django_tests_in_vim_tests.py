@@ -17,7 +17,7 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
             "/tmp/project_multiple_apps/example_app1/tests/", "/tmp/bad_project_multiple_invalid_apps/example_app1/tests/",
             "/tmp/project_nested_test_dirs/example_app1/tests/nested1/", "/tmp/project_contains_app_name/app_name/tests/",
             "/tmp/project_failfast/example_app/tests/", "/tmp/project_nocapture/example_app/tests/",
-            "/tmp/project_with_dots/example.app.something/tests/"
+            "/tmp/project_with_dots/example.app.something/tests/", "/tmp/django_runner_project_app/example_app1/tests/"
         ]
 
         contents_to_write = [
@@ -43,7 +43,9 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
             ("/tmp/project_nocapture/.vim-django", '{"app_name": "example_app", "flags": ["nocapture"]}'),
             ("/tmp/project_nocapture/manage.py", "#Place holder"),
             ("/tmp/project_with_dots/.vim-django", '{"app_name": "example.app.something"}'),
-            ("/tmp/project_with_dots/manage.py", "#Place holder")
+            ("/tmp/project_with_dots/manage.py", "#Place holder"),
+            ("/tmp/django_runner_project_app/.vim-django", '{"app_name": "example_app1", "test-runner": "django"}'),
+            ("/tmp/django_runner_project_app/manage.py", "#Place holder")
         ]
 
         for directory in dirs_to_make:
@@ -54,7 +56,6 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
                 f.write(needed_file[1])
 
     def tearDown(self):
-
         for a_dir in glob.glob("/tmp/*project_*"):
             shutil.rmtree(a_dir)
 
@@ -383,6 +384,22 @@ class VimTestRunnerForDjangoTests(unittest.TestCase):
         expected_return_value = "/tmp/project_with_dots/manage.py test example.app.something.tests.test_dot_file:Example1.dummy2"
         command_returned = sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer)
         self.assertEqual(command_returned, expected_return_value)
+
+    def test_get_command_to_run_current_class_writes_using_django_default_test_runner_when_runner_set_to_django_in_vim_django_file(self):
+        current_dir = '/tmp/project_app_only/example_app1/tests/test_file.py'
+        current_line = 17
+        current_buffer = self.build_buffer_helper()
+        command_to_run = sut.get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
+        last_command = self.get_cached_command()
+        self.assertEqual(command_to_run, last_command)
+
+    def test_get_command_to_run_current_method_writes_using_django_default_test_runner_when_runner_set_to_django_in_vim_django_file(self):
+        current_dir = '/tmp/django_runner_project_app/example_app1/tests/test_file.py'
+        current_line = 17
+        current_buffer = self.build_buffer_helper()
+        command_to_run = sut.get_command_to_run_the_current_method(current_dir, current_line, current_buffer)
+        last_command = self.get_cached_command()
+        self.assertEqual(command_to_run, last_command)
 
     def build_buffer_helper(self):
         current_dir = os.path.dirname(os.path.abspath(getfile(currentframe())))

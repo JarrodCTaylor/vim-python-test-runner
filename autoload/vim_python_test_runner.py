@@ -35,7 +35,8 @@ def get_command_to_run_the_current_file(current_dir):
 
 def get_command_to_run_the_current_class(current_dir, current_line, current_buffer):
     class_name = get_current_method_and_class(current_line, current_buffer)[0]
-    cmd = "{}:{}".format(get_command_to_run_the_current_file(current_dir), class_name)
+    divider = '.' if get_test_runner(current_dir) == 'django' else ':'
+    cmd = "{}{}{}".format(get_command_to_run_the_current_file(current_dir), divider, class_name)
     write_test_command_to_cache_file(cmd)
     return cmd
 
@@ -153,4 +154,11 @@ def get_env_name_if_exists(current_dir):
     env_name = get_json_field_from_config_file(current_dir, "environment")
     if env_name:
         return " {} ".format(env_name)
+    return " "
+
+
+def get_test_runner(current_dir):
+    runner = get_json_field_from_config_file(current_dir, "test-runner")
+    if runner:
+        return "{}".format(runner)
     return " "
