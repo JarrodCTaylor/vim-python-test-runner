@@ -115,6 +115,9 @@ Optional fields that can be set in the vim-django config file are as follows:
 - `flags`:       An array of flags that you would like passed to the test runner
                  See example config file below for usage.
 
+- `test-runner`: Set if you are using the default Django test runner
+                 Example `"test-runner": "django"`
+
 
 #### vim-django config file example
 
