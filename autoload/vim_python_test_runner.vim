@@ -28,6 +28,10 @@ def get_proper_command(desired_command, current_directory):
         "nose_class": lambda: get_command_to_run_current_class_with_nosetests(vim.current.buffer.name, current_line_index, vim.current.buffer),
         "nose_method": lambda: get_command_to_run_current_method_with_nosetests(vim.current.buffer.name, current_line_index, vim.current.buffer),
         "nose_base_method": lambda: get_command_to_run_current_base_method_with_nosetests(vim.current.buffer.name, current_line_index, vim.current.buffer),
+        "pytest_file": lambda: get_command_to_run_current_file_with_pytests(vim.current.buffer.name),
+        "pytest_class": lambda: get_command_to_run_current_class_with_pytests(vim.current.buffer.name, current_line_index, vim.current.buffer),
+        "pytest_method": lambda: get_command_to_run_current_method_with_pytests(vim.current.buffer.name, current_line_index, vim.current.buffer),
+        "pytest_base_method": lambda: get_command_to_run_current_base_method_with_pytests(vim.current.buffer.name, current_line_index, vim.current.buffer),
         "rerun": lambda: get_command_to_rerun_last_tests()
     }
     return FUNCTIONS[desired_command]()
@@ -35,6 +39,9 @@ def get_proper_command(desired_command, current_directory):
 def run_desired_command_for_os(command_to_run):
     if "nose" in vim.eval("a:command_to_run") or "nose" in command_to_run:
         # Run nosetests for Python.
+        vim.command("{0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
+    if "pytest" in vim.eval("a:command_to_run") or "pytest" in command_to_run:
+        # Run pytests for Python.
         vim.command("{0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
     else:
         # Run manage.py test for Django.
