@@ -70,6 +70,10 @@ your vimrc:
     nnoremap<Leader>nc :NosetestClass<CR>
     nnoremap<Leader>nm :NosetestMethod<CR>
     nnoremap<Leader>nb :NosetestBaseMethod<CR>
+    nnoremap<Leader>tf :PytestFile<CR>
+    nnoremap<Leader>tc :PytestClass<CR>
+    nnoremap<Leader>tm :PytestMethod<CR>
+    nnoremap<Leader>tb :PytestBaseMethod<CR>
     nnoremap<Leader>rr :RerunLastTests<CR>
 
 Your tests results will be available in the quickfix window after they finish

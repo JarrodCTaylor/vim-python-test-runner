@@ -79,6 +79,36 @@ def get_command_to_run_current_base_method_with_nosetests(path_to_current_file, 
     return command
 
 
+def get_command_to_run_current_file_with_pytests(path_to_current_file):
+    command = ":!pytest {0}".format(path_to_current_file)
+    write_test_command_to_cache_file(command)
+    return command
+
+
+def get_command_to_run_current_class_with_pytests(path_to_current_file, current_line, current_buffer):
+    run_file = get_command_to_run_current_file_with_pytests(path_to_current_file)
+    current_class = get_current_method_and_class(current_line, current_buffer)[0]
+    command = run_file + "::" + current_class
+    write_test_command_to_cache_file(command)
+    return command
+
+
+def get_command_to_run_current_method_with_pytests(path_to_current_file, current_line, current_buffer):
+    run_class = get_command_to_run_current_class_with_pytests(path_to_current_file, current_line, current_buffer)
+    current_method = get_current_method_and_class(current_line, current_buffer)[1]
+    command = run_class + "::" + current_method
+    write_test_command_to_cache_file(command)
+    return command
+
+
+def get_command_to_run_current_base_method_with_pytests(path_to_current_file, current_line, current_buffer):
+    run_file = get_command_to_run_current_file_with_pytests(path_to_current_file)
+    current_method = get_current_method_and_class(current_line, current_buffer)[1]
+    command = run_file + "::" + current_method
+    write_test_command_to_cache_file(command)
+    return command
+
+
 def get_command_to_rerun_last_tests():
     with open("/tmp/vim_python_test_runner_cache", "r") as f:
         return f.read()
