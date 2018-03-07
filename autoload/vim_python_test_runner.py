@@ -5,13 +5,15 @@ import json
 
 
 class NotDjango(Exception):
+
     def __str__(self):
-                return "Are you sure this is a Django project?"
+        return "Are you sure this is a Django project?"
 
 
 class NoVimDjango(Exception):
+
     def __str__(self):
-                return ".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner.txt'"
+        return ".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner.txt'"
 
 
 def get_command_to_run_the_current_app(current_dir):
@@ -152,7 +154,7 @@ def get_file_name(current_dir):
 def get_current_method_and_class(current_line_index, current_buffer):
     class_regex, class_name = re.compile(r"^class (?P<class_name>.+)\("), False
     method_regex, method_name = re.compile(r"def (?P<method_name>.+)\("), False
-    for line in xrange(current_line_index - 1, -1, -1):
+    for line in range(current_line_index - 1, -1, -1):
         if class_regex.search(current_buffer[line]) is not None and not class_name:
             class_name = class_regex.search(current_buffer[line])
             class_name = class_name.group(1)
