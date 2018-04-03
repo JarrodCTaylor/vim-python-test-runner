@@ -1,19 +1,19 @@
 set makeprg=cat\ /tmp/test_results.txt
 set efm+=%-G%.%#lib/python%.%#/site-package%.%#,%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 
-if !has('python')
+if !has('python3')
     finish
 endif
 
 " -----------------------------
 " Add our directory to the path
 " -----------------------------
-python import sys
-python import vim
-python sys.path.append(vim.eval('expand("<sfile>:h")'))
+python3 import sys
+python3 import vim
+python3 sys.path.append(vim.eval('expand("<sfile>:h")'))
 
 function! vim_python_test_runner#RunDesiredTests(command_to_run)
-python << endPython
+python3 << endPython
 import os
 from vim_python_test_runner import *
 
