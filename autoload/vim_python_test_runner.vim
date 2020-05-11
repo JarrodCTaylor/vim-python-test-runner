@@ -13,7 +13,7 @@ python3 import vim
 python3 sys.path.append(vim.eval('expand("<sfile>:h")'))
 
 function! vim_python_test_runner#RunDesiredTests(command_to_run)
-python3 << endPython
+python3 << EndPython
 import os
 from vim_python_test_runner import *
 
@@ -58,6 +58,6 @@ def main():
 
 vim.command('wall')
 main()
-endPython
+EndPython
 endfunction
 
