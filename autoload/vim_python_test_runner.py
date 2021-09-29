@@ -6,12 +6,12 @@ import json
 
 class NotDjango(Exception):
     def __str__(self):
-                return "Are you sure this is a Django project?"
+        return "Are you sure this is a Django project?"
 
 
 class NoVimDjango(Exception):
     def __str__(self):
-                return ".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner.txt'"
+        return ".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner.txt'"
 
 
 def get_command_to_run_the_current_app(current_dir):
@@ -45,6 +45,15 @@ def get_command_to_run_the_current_method(current_dir, current_line, current_buf
     method_name = get_current_method_and_class(current_line, current_buffer)[1]
     command_to_current_class = get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
     cmd = "{}.{}".format(command_to_current_class, method_name)
+    write_test_command_to_cache_file(cmd)
+    return cmd
+
+
+def get_command_to_run_the_current_docker_method(current_dir, current_line, current_buffer):
+    method_name = get_current_method_and_class(current_line, current_buffer)[1]
+    command_to_current_class = get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
+    docker_nub = get_docker_nub_name(current_dir)
+    cmd = "{} python {}.{}".format(docker_nub, command_to_current_class, method_name)
     write_test_command_to_cache_file(cmd)
     return cmd
 
@@ -97,6 +106,13 @@ def find_path_to_file(current_dir, file_to_look_for, raise_exception=False):
             return path_to_check + os.sep + file_to_look_for
     raise raise_exception
 
+
+def get_docker_nub_name(current_dir):
+    apps = get_json_field_from_config_file(current_dir, "docker_nub")
+    try:
+        return [app.lstrip() for app in apps.split(",") if app.lstrip() in current_dir][0]
+    except:
+        raise NoVimDjango
 
 def get_app_name(current_dir):
     apps = get_json_field_from_config_file(current_dir, "app_name")

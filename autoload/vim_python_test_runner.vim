@@ -24,6 +24,7 @@ def get_proper_command(desired_command, current_directory):
         "django_file": lambda: get_command_to_run_the_current_file(current_directory),
         "django_class": lambda: get_command_to_run_the_current_class(current_directory, current_line_index, vim.current.buffer),
         "django_method": lambda: get_command_to_run_the_current_method(current_directory, current_line_index, vim.current.buffer),
+        "docker_django_method": lambda: get_command_to_run_the_current_docker_method(current_directory, current_line_index, vim.current.buffer),
         "nose_file": lambda: get_command_to_run_current_file_with_nosetests(vim.current.buffer.name),
         "nose_class": lambda: get_command_to_run_current_class_with_nosetests(vim.current.buffer.name, current_line_index, vim.current.buffer),
         "nose_method": lambda: get_command_to_run_current_method_with_nosetests(vim.current.buffer.name, current_line_index, vim.current.buffer),
@@ -33,6 +34,8 @@ def get_proper_command(desired_command, current_directory):
     return FUNCTIONS[desired_command]()
 
 def run_desired_command_for_os(command_to_run):
+    if 'docker' in vim.eval("a:command_to_run") or 'docker' in command_to_run:
+        vim.command(":!docker-compose exec {0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
     if "nose" in vim.eval("a:command_to_run") or "nose" in command_to_run:
         vim.command("{0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
     vim.command(":!python {0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
