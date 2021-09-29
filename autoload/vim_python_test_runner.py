@@ -5,11 +5,13 @@ import json
 
 
 class NotDjango(Exception):
+
     def __str__(self):
         return "Are you sure this is a Django project?"
 
 
 class NoVimDjango(Exception):
+
     def __str__(self):
         return ".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner.txt'"
 
@@ -88,6 +90,36 @@ def get_command_to_run_current_base_method_with_nosetests(path_to_current_file, 
     return command
 
 
+def get_command_to_run_current_file_with_pytests(path_to_current_file):
+    command = ":!pytest {0}".format(path_to_current_file)
+    write_test_command_to_cache_file(command)
+    return command
+
+
+def get_command_to_run_current_class_with_pytests(path_to_current_file, current_line, current_buffer):
+    run_file = get_command_to_run_current_file_with_pytests(path_to_current_file)
+    current_class = get_current_method_and_class(current_line, current_buffer)[0]
+    command = run_file + "::" + current_class
+    write_test_command_to_cache_file(command)
+    return command
+
+
+def get_command_to_run_current_method_with_pytests(path_to_current_file, current_line, current_buffer):
+    run_class = get_command_to_run_current_class_with_pytests(path_to_current_file, current_line, current_buffer)
+    current_method = get_current_method_and_class(current_line, current_buffer)[1]
+    command = run_class + "::" + current_method
+    write_test_command_to_cache_file(command)
+    return command
+
+
+def get_command_to_run_current_base_method_with_pytests(path_to_current_file, current_line, current_buffer):
+    run_file = get_command_to_run_current_file_with_pytests(path_to_current_file)
+    current_method = get_current_method_and_class(current_line, current_buffer)[1]
+    command = run_file + "::" + current_method
+    write_test_command_to_cache_file(command)
+    return command
+
+
 def get_command_to_rerun_last_tests():
     with open("/tmp/vim_python_test_runner_cache", "r") as f:
         return f.read()
@@ -138,7 +170,7 @@ def get_file_name(current_dir):
 def get_current_method_and_class(current_line_index, current_buffer):
     class_regex, class_name = re.compile(r"^class (?P<class_name>.+)\("), False
     method_regex, method_name = re.compile(r"def (?P<method_name>.+)\("), False
-    for line in xrange(current_line_index - 1, -1, -1):
+    for line in range(current_line_index - 1, -1, -1):
         if class_regex.search(current_buffer[line]) is not None and not class_name:
             class_name = class_regex.search(current_buffer[line])
             class_name = class_name.group(1)
