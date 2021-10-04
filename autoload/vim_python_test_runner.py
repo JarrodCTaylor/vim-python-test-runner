@@ -16,8 +16,8 @@ class NoVimDjango(Exception):
         return ".vim-django file does not exist or is improperly formated. ':help vim-python-test-runner.txt'"
 
 
-def get_command_to_run_the_current_app(current_dir):
-    path_to_manage = find_path_to_file(current_dir, "manage.py", NotDjango)
+def get_command_to_run_the_current_app(current_dir, docker=False):
+    path_to_manage = find_path_to_file(current_dir, "manage.py", NotDjango) if not docker else 'manage.py'
     app_name = get_app_name(current_dir)
     env_name = get_env_name_if_exists(current_dir)
     flags = get_flags(current_dir)
@@ -26,8 +26,8 @@ def get_command_to_run_the_current_app(current_dir):
     return (command)
 
 
-def get_command_to_run_the_current_file(current_dir):
-    command_to_current_app = get_command_to_run_the_current_app(current_dir)
+def get_command_to_run_the_current_file(current_dir, docker=False):
+    command_to_current_app = get_command_to_run_the_current_app(current_dir, docker)
     path_to_tests = get_dot_notation_path_to_test(current_dir)
     file_name = get_file_name(current_dir)
     cmd = "{}.{}.{}".format(command_to_current_app, path_to_tests, file_name)
@@ -35,10 +35,10 @@ def get_command_to_run_the_current_file(current_dir):
     return cmd
 
 
-def get_command_to_run_the_current_class(current_dir, current_line, current_buffer):
+def get_command_to_run_the_current_class(current_dir, current_line, current_buffer, docker=False):
     class_name = get_current_method_and_class(current_line, current_buffer)[0]
     divider = '.' if get_test_runner(current_dir) == 'django' else ':'
-    cmd = "{}{}{}".format(get_command_to_run_the_current_file(current_dir), divider, class_name)
+    cmd = "{}{}{}".format(get_command_to_run_the_current_file(current_dir, docker), divider, class_name)
     write_test_command_to_cache_file(cmd)
     return cmd
 
@@ -53,7 +53,7 @@ def get_command_to_run_the_current_method(current_dir, current_line, current_buf
 
 def get_command_to_run_the_current_docker_method(current_dir, current_line, current_buffer):
     method_name = get_current_method_and_class(current_line, current_buffer)[1]
-    command_to_current_class = get_command_to_run_the_current_class(current_dir, current_line, current_buffer)
+    command_to_current_class = get_command_to_run_the_current_class(current_dir, current_line, current_buffer, True)
     docker_nub = get_docker_nub_name(current_dir)
     cmd = "{} python {}.{}".format(docker_nub, command_to_current_class, method_name)
     write_test_command_to_cache_file(cmd)

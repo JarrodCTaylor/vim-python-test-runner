@@ -39,7 +39,7 @@ def get_proper_command(desired_command, current_directory):
 
 def run_desired_command_for_os(command_to_run):
     if 'docker' in vim.eval("a:command_to_run") or 'docker' in command_to_run:
-        vim.command(":!docker-compose exec {0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
+        vim.command(":!docker-compose exec -T {0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
     if "nose" in vim.eval("a:command_to_run") or "nose" in command_to_run:
         # Run nosetests for Python.
         vim.command("{0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
