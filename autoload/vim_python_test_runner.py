@@ -23,7 +23,7 @@ def get_command_to_run_the_current_app(current_dir):
     flags = get_flags(current_dir)
     command = "{0}{1}test {2}{3}".format(path_to_manage, env_name, flags, app_name)
     write_test_command_to_cache_file(command)
-    return (command)
+    return command
 
 
 def get_command_to_run_the_current_file(current_dir):
@@ -107,6 +107,38 @@ def get_command_to_run_current_base_method_with_pytests(path_to_current_file, cu
     run_file = get_command_to_run_current_file_with_pytests(path_to_current_file)
     current_method = get_current_method_and_class(current_line, current_buffer)[1]
     command = run_file + "::" + current_method
+    write_test_command_to_cache_file(command)
+    return command
+
+
+def get_command_to_run_python_app_with_docker(current_dir):
+    app_name = get_app_name(current_dir)
+    command = "Dispatch docker compose run test {}".format(app_name)
+    write_test_command_to_cache_file(command)
+    return command
+
+
+def get_command_to_run_python_file_with_docker(current_dir):
+    app_command = get_command_to_run_python_app_with_docker(current_dir)
+    path_to_tests = get_dot_notation_path_to_test(current_dir)
+    file_name = get_file_name(current_dir)
+    command = "{}.{}.{}".format(app_command, path_to_tests, file_name)
+    write_test_command_to_cache_file(command)
+    return command
+
+
+def get_command_to_run_python_class_with_docker(current_dir, current_line, current_buffer):
+    file_command = get_command_to_run_python_file_with_docker(current_dir)
+    current_class = get_current_method_and_class(current_line, current_buffer)[0]
+    command = "{}:{}".format(file_command, current_class)
+    write_test_command_to_cache_file(command)
+    return command
+
+
+def get_command_to_run_python_method_with_docker(current_dir, current_line, current_buffer):
+    class_command = get_command_to_run_python_class_with_docker(current_dir, current_line, current_buffer)
+    current_method = get_current_method_and_class(current_line, current_buffer)[1]
+    command = "{}.{}".format(class_command, current_method)
     write_test_command_to_cache_file(command)
     return command
 

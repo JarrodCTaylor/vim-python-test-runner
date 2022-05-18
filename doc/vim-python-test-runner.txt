@@ -43,7 +43,7 @@ pip installed in order for the plugin to function properly.
 ===============================================================================
 3. Usage                                                    *test-runner-usage*
 
-The plugin provides nine commands:
+The plugin provides thirteen commands:
 
 - `DjangoTestApp`: Run all tests for the current app
 - `DjangoTestFile`: Run all tests in the current file
@@ -53,6 +53,10 @@ The plugin provides nine commands:
 - `NosetestClass`: Run all tests in the current class
 - `NosetestMethod`: Run the current test method (inside of a class)
 - `NosetestBaseMethod`: Run the current test method (outside of a class)
+- `DockerPythonApp`: Run the current app in docker
+- `DockerPythonFile`: Run the current file in docker
+- `DockerPythonClass`: Run the current class in docker
+- `DockerPythonMethod`: Run the current method in docker
 - `RerunLastTests`: Rerun the last tests
 
 All arguments can be tab-completed. Ensure that your cursor is within a
@@ -74,6 +78,10 @@ your vimrc:
     nnoremap<Leader>tc :PytestClass<CR>
     nnoremap<Leader>tm :PytestMethod<CR>
     nnoremap<Leader>tb :PytestBaseMethod<CR>
+    nnoremap<Leader>ka :DockerPythonApp<CR>
+    nnoremap<Leader>kf :DockerPythonFile<CR>
+    nnoremap<Leader>kc :DockerPythonClass<CR>
+    nnoremap<Leader>km :DockerPythonMethod<CR>
     nnoremap<Leader>rr :RerunLastTests<CR>
 
 Your tests results will be available in the quickfix window after they finish
