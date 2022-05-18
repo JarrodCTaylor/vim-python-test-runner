@@ -32,12 +32,16 @@ def get_proper_command(desired_command, current_directory):
         "pytest_class": lambda: get_command_to_run_current_class_with_pytests(vim.current.buffer.name, current_line_index, vim.current.buffer),
         "pytest_method": lambda: get_command_to_run_current_method_with_pytests(vim.current.buffer.name, current_line_index, vim.current.buffer),
         "pytest_base_method": lambda: get_command_to_run_current_base_method_with_pytests(vim.current.buffer.name, current_line_index, vim.current.buffer),
-        "rerun": lambda: get_command_to_rerun_last_tests()
+        "rerun": lambda: get_command_to_rerun_last_tests(),
+        "docker_python_app": lambda: get_command_to_run_python_app_with_docker(current_directory),
+        "docker_python_file": lambda: get_command_to_run_python_file_with_docker(current_directory),
+        "docker_python_class": lambda: get_command_to_run_python_class_with_docker(current_directory, current_line_index, vim.current.buffer),
+        "docker_python_method": lambda: get_command_to_run_python_method_with_docker(current_directory, current_line_index, vim.current.buffer),
     }
     return FUNCTIONS[desired_command]()
 
 def run_desired_command_for_os(command_to_run):
-    if "nose" in vim.eval("a:command_to_run") or "nose" in command_to_run:
+    if "nose" in vim.eval("a:command_to_run") or "nose" in command_to_run or "docker" in command_to_run:
         # Run nosetests for Python.
         vim.command("{0} 2>&1 | tee /tmp/test_results.txt".format(command_to_run))
     elif "pytest" in vim.eval("a:command_to_run") or "pytest" in command_to_run:
